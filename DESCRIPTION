@@ -1,0 +1,38 @@
+Package: PortfolioAnalytics
+Type: Package
+Title: Portfolio Analysis, Including Numerical Methods for Optimization
+        of Portfolios
+Authors@R: c(
+    person(given=c("Brian","G."),family="Peterson",role=c("cre","aut","cph"),
+    email="brian@braverock.com") ,
+    person(given="Peter",family="Carl",role=c("aut","cph"),
+    email="peter@braverock.com") ,
+    person(given="Kris",family="Boudt",role=c("ctb","cph")) ,
+    person(given="Ross",family="Bennett",role=c("ctb","cph")) ,
+    person(given="Hezky",family="Varon",role="ctb") ,
+    person(given="Guy",family="Yollin",role="ctb") ,
+    person(given="R. Douglas",family="Martin",role="ctb") )
+Version: 1.0.3636
+Date: 2015-04-18
+Maintainer: Brian G. Peterson <brian@braverock.com>
+Description: Portfolio optimization and analysis routines and graphics.
+Depends: R (>= 2.14.0), zoo, xts (>= 0.8), foreach,
+        PerformanceAnalytics (>= 1.1.0)
+Suggests: quantmod, DEoptim(>= 2.2.1), iterators, fGarch, Rglpk,
+        quadprog, ROI (>= 0.1.0), ROI.plugin.glpk (>= 0.0.2),
+        ROI.plugin.quadprog (>= 0.0.2), ROI.plugin.symphony (>= 0.0.2),
+        pso, GenSA, corpcor, testthat, nloptr (>= 1.0.0), MASS,
+        robustbase
+License: GPL
+Copyright: (c) 2004-2015
+NeedsCompilation: yes
+Packaged: 2015-04-19 01:37:19.121143 UTC; brian
+Author: Brian G. Peterson [cre, aut, cph],
+  Peter Carl [aut, cph],
+  Kris Boudt [ctb, cph],
+  Ross Bennett [ctb, cph],
+  Hezky Varon [ctb],
+  Guy Yollin [ctb],
+  R. Douglas Martin [ctb]
+Repository: CRAN
+Date/Publication: 2015-04-19 07:38:57
