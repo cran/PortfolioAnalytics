@@ -1,12 +1,12 @@
 ###############################################################################
-# R (http://r-project.org/) Numeric Methods for Optimization of Portfolios
+# R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2015 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
 #
-# $Id: extractstats.R 3632 2015-04-17 16:38:40Z rossbennett34 $
+# $Id$
 #
 ###############################################################################
 
@@ -152,8 +152,8 @@ extractStats.optimize.portfolio.pso <- function(object, prefix=NULL, ...){
       # might violate your constraints, so you'd need to renormalize them after optimizing
       # we'll create functions for that so the user is less likely to mess it up.
       
-      ##' NOTE: need to normalize in the optimization wrapper too before we return, since we've normalized in here
-      ##' In Kris' original function, this was manifested as a full investment constraint
+      # NOTE: need to normalize in the optimization wrapper too before we return, since we've normalized in here
+      # In Kris' original function, this was manifested as a full investment constraint
       if(!is.null(constraints$max_sum) & constraints$max_sum != Inf ) {
         max_sum=constraints$max_sum
         if(sum(weights)>max_sum) { weights<-(max_sum/sum(weights))*weights } # normalize to max_sum
@@ -412,7 +412,7 @@ extractWeights.optimize.portfolio.rebalancing <- function(object, ...){
 
   colnames(result) = names(unlist(rebal_object[[1]]$weights))
   rownames(result) = names(rebal_object)
-  result = as.xts(result)
+  result = as.xts(result, dateFormat="Date")
   return(result)
 }
 

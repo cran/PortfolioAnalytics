@@ -12,21 +12,24 @@ Authors@R: c(
     person(given="Hezky",family="Varon",role="ctb") ,
     person(given="Guy",family="Yollin",role="ctb") ,
     person(given="R. Douglas",family="Martin",role="ctb") )
-Version: 1.0.3636
-Date: 2015-04-18
+Version: 1.1.0
+Date: 2018-05-17
 Maintainer: Brian G. Peterson <brian@braverock.com>
 Description: Portfolio optimization and analysis routines and graphics.
-Depends: R (>= 2.14.0), zoo, xts (>= 0.8), foreach,
-        PerformanceAnalytics (>= 1.1.0)
+Depends: R (>= 3.3.0), zoo, xts (>= 0.10-1), foreach,
+        PerformanceAnalytics (>= 1.5.1)
 Suggests: quantmod, DEoptim(>= 2.2.1), iterators, fGarch, Rglpk,
         quadprog, ROI (>= 0.1.0), ROI.plugin.glpk (>= 0.0.2),
         ROI.plugin.quadprog (>= 0.0.2), ROI.plugin.symphony (>= 0.0.2),
         pso, GenSA, corpcor, testthat, nloptr (>= 1.0.0), MASS,
         robustbase
-License: GPL
-Copyright: (c) 2004-2015
+Imports: methods
+License: GPL-2 | GPL-3
+URL: https://github.com/braverock/PortfolioAnalytics
+Copyright: (c) 2004-2018
+RoxygenNote: 6.0.1.9000
 NeedsCompilation: yes
-Packaged: 2015-04-19 01:37:19.121143 UTC; brian
+Packaged: 2018-05-17 17:39:52.663123 UTC; brian
 Author: Brian G. Peterson [cre, aut, cph],
   Peter Carl [aut, cph],
   Kris Boudt [ctb, cph],
@@ -35,4 +38,4 @@ Author: Brian G. Peterson [cre, aut, cph],
   Guy Yollin [ctb],
   R. Douglas Martin [ctb]
 Repository: CRAN
-Date/Publication: 2015-04-19 07:38:57
+Date/Publication: 2018-05-17 22:48:29 UTC

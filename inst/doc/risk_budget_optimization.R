@@ -8,11 +8,10 @@ options(width=80)
 
 
 ###################################################
-### code chunk number 2: risk_budget_optimization.Rnw:89-98
+### code chunk number 2: risk_budget_optimization.Rnw:89-97
 ###################################################
 library(PortfolioAnalytics)
 library(DEoptim)
-library(fGarch)
 library(robustbase)
 data(indexes)
 class(indexes)
@@ -22,7 +21,7 @@ tail(indexes,2)
 
 
 ###################################################
-### code chunk number 3: risk_budget_optimization.Rnw:107-113
+### code chunk number 3: risk_budget_optimization.Rnw:106-112
 ###################################################
 # Create the portfolio specification object
 Wcons <- portfolio.spec( assets = colnames(indexes) )
@@ -33,7 +32,7 @@ Wcons <- add.constraint( portfolio=Wcons, type="full_investment")
 
 
 ###################################################
-### code chunk number 4: risk_budget_optimization.Rnw:117-121
+### code chunk number 4: risk_budget_optimization.Rnw:116-120
 ###################################################
 constrained_objective( w = rep(1/4,4) , R = indexes, portfolio = Wcons) 
 constrained_objective( w = rep(1/3,4) , R = indexes, portfolio = Wcons) 
@@ -42,20 +41,20 @@ constrained_objective( w = rep(1/3,4) , R = indexes, portfolio = Wcons,
 
 
 ###################################################
-### code chunk number 5: risk_budget_optimization.Rnw:130-132
+### code chunk number 5: risk_budget_optimization.Rnw:129-131
 ###################################################
 ObjSpec = add.objective( portfolio = Wcons , type="risk",name="CVaR",
                          arguments=list(p=0.95), enabled=TRUE)   
 
 
 ###################################################
-### code chunk number 6: risk_budget_optimization.Rnw:136-137
+### code chunk number 6: risk_budget_optimization.Rnw:135-136
 ###################################################
 constrained_objective( w = rep(1/4,4) , R = indexes, portfolio = ObjSpec) 
 
 
 ###################################################
-### code chunk number 7: risk_budget_optimization.Rnw:141-145
+### code chunk number 7: risk_budget_optimization.Rnw:140-144
 ###################################################
 library(PerformanceAnalytics)
 out<-ES(indexes, weights = rep(1/4,4),p=0.95, 
@@ -64,7 +63,7 @@ out$MES
 
 
 ###################################################
-### code chunk number 8: risk_budget_optimization.Rnw:149-152
+### code chunk number 8: risk_budget_optimization.Rnw:148-151
 ###################################################
 out<-ES(indexes, weights = rep(1/4,4),p=0.95, clean="boudt", 
         portfolio_method="component")
@@ -72,7 +71,7 @@ out$MES
 
 
 ###################################################
-### code chunk number 9: risk_budget_optimization.Rnw:156-159
+### code chunk number 9: risk_budget_optimization.Rnw:155-158
 ###################################################
 ObjSpec = add.objective( portfolio = Wcons , type="risk",name="CVaR",
                          arguments=list(p=0.95,clean="boudt"), enabled=TRUE)   
@@ -80,7 +79,7 @@ constrained_objective( w = rep(1/4,4) , R = indexes[,1:4] , portfolio = ObjSpec)
 
 
 ###################################################
-### code chunk number 10: risk_budget_optimization.Rnw:165-169
+### code chunk number 10: risk_budget_optimization.Rnw:164-168
 ###################################################
 ObjSpec = add.objective( portfolio = Wcons , type="risk",name="CVaR",
                          arguments=list(p=0.95,clean="boudt"), 
@@ -89,7 +88,7 @@ constrained_objective( w = rep(1/4,4) , R = indexes[,1:4] , portfolio = ObjSpec)
 
 
 ###################################################
-### code chunk number 11: risk_budget_optimization.Rnw:175-178
+### code chunk number 11: risk_budget_optimization.Rnw:174-177
 ###################################################
 ObjSpec = add.objective( portfolio = Wcons , type="risk_budget_objective",
                          name="CVaR", arguments=list(p=0.95, clean="boudt"), 
@@ -97,21 +96,21 @@ ObjSpec = add.objective( portfolio = Wcons , type="risk_budget_objective",
 
 
 ###################################################
-### code chunk number 12: risk_budget_optimization.Rnw:182-184
+### code chunk number 12: risk_budget_optimization.Rnw:181-183
 ###################################################
 constrained_objective( w = rep(1/4,4) , R = indexes, 
                        portfolio = ObjSpec, trace=TRUE)
 
 
 ###################################################
-### code chunk number 13: risk_budget_optimization.Rnw:188-190
+### code chunk number 13: risk_budget_optimization.Rnw:187-189
 ###################################################
 ES(indexes[,1:4],weights = rep(1/4,4),p=0.95,clean="boudt", 
    portfolio_method="component")
 
 
 ###################################################
-### code chunk number 14: risk_budget_optimization.Rnw:197-201
+### code chunk number 14: risk_budget_optimization.Rnw:196-200
 ###################################################
 ObjSpec = add.objective( portfolio = Wcons , type="risk_budget_objective", 
                          name="CVaR", max_prisk = 0.3, 
@@ -120,7 +119,7 @@ constrained_objective( w = rep(1/4,4) , R = indexes, portfolio = ObjSpec)
 
 
 ###################################################
-### code chunk number 15: risk_budget_optimization.Rnw:219-233
+### code chunk number 15: risk_budget_optimization.Rnw:218-232
 ###################################################
 # Create the portfolio specification object
 ObjSpec <- portfolio.spec(assets=colnames(indexes[,1:4]))
@@ -139,7 +138,7 @@ ObjSpec <- add.objective(portfolio=ObjSpec, type="risk_budget_objective",
 
 
 ###################################################
-### code chunk number 16: risk_budget_optimization.Rnw:238-243
+### code chunk number 16: risk_budget_optimization.Rnw:237-242
 ###################################################
 set.seed(1234)
 out <- optimize.portfolio(R=indexes, portfolio=ObjSpec, 
@@ -149,7 +148,7 @@ print(out)
 
 
 ###################################################
-### code chunk number 17: risk_budget_optimization.Rnw:249-257
+### code chunk number 17: risk_budget_optimization.Rnw:248-256
 ###################################################
 names(out)
 # View the DEoptim_objective_results information at the last iteration
@@ -162,21 +161,21 @@ head(xtract)
 
 
 ###################################################
-### code chunk number 18: risk_budget_optimization.Rnw:262-264
+### code chunk number 18: risk_budget_optimization.Rnw:261-263
 ###################################################
 plot.new()
 chart.Weights(out)
 
 
 ###################################################
-### code chunk number 19: risk_budget_optimization.Rnw:267-269
+### code chunk number 19: risk_budget_optimization.Rnw:266-268
 ###################################################
 plot.new()
 chart.RiskBudget(out, risk.type="pct_contrib", col="blue", pch=18)
 
 
 ###################################################
-### code chunk number 20: risk_budget_optimization.Rnw:277-293
+### code chunk number 20: risk_budget_optimization.Rnw:276-292
 ###################################################
 # Create the portfolio specification object
 ObjSpec <- portfolio.spec(assets=colnames(indexes))
@@ -197,7 +196,7 @@ out <- optimize.portfolio(R=indexes, portfolio=ObjSpec,
 
 
 ###################################################
-### code chunk number 21: risk_budget_optimization.Rnw:298-303
+### code chunk number 21: risk_budget_optimization.Rnw:297-302
 ###################################################
 print(out)
 
@@ -207,7 +206,7 @@ ES(indexes[,1:4], weights=out$weights, p=0.95, clean="boudt",
 
 
 ###################################################
-### code chunk number 22: risk_budget_optimization.Rnw:308-311
+### code chunk number 22: risk_budget_optimization.Rnw:307-310
 ###################################################
 plot.new()
 chart.RiskBudget(out, neighbors=25, risk.type="pct_contrib", 
@@ -215,7 +214,7 @@ chart.RiskBudget(out, neighbors=25, risk.type="pct_contrib",
 
 
 ###################################################
-### code chunk number 23: risk_budget_optimization.Rnw:321-327
+### code chunk number 23: risk_budget_optimization.Rnw:320-326
 ###################################################
 set.seed(1234)
 out <- optimize.portfolio.rebalancing(R=indexes, portfolio=ObjSpec, 
@@ -226,7 +225,7 @@ out <- optimize.portfolio.rebalancing(R=indexes, portfolio=ObjSpec,
 
 
 ###################################################
-### code chunk number 24: risk_budget_optimization.Rnw:333-336
+### code chunk number 24: risk_budget_optimization.Rnw:332-335
 ###################################################
 names(out)
 names(out$opt_rebalancing[[1]])
@@ -234,7 +233,7 @@ out
 
 
 ###################################################
-### code chunk number 25: risk_budget_optimization.Rnw:340-343
+### code chunk number 25: risk_budget_optimization.Rnw:339-342
 ###################################################
 opt.summary <- summary(out)
 names(opt.summary)
@@ -242,7 +241,7 @@ opt.summary
 
 
 ###################################################
-### code chunk number 26: risk_budget_optimization.Rnw:348-351
+### code chunk number 26: risk_budget_optimization.Rnw:347-350
 ###################################################
 extractWeights(out)
 plot.new()
@@ -250,27 +249,27 @@ chart.Weights(out, colorset=bluemono)
 
 
 ###################################################
-### code chunk number 27: risk_budget_optimization.Rnw:356-357
+### code chunk number 27: risk_budget_optimization.Rnw:355-356
 ###################################################
 head(extractObjectiveMeasures(out))
 
 
 ###################################################
-### code chunk number 28: risk_budget_optimization.Rnw:362-364
+### code chunk number 28: risk_budget_optimization.Rnw:361-363
 ###################################################
 out$opt_rebalancing[[1]]$data_summary
 out$opt_rebalancing[[2]]$data_summary
 
 
 ###################################################
-### code chunk number 29: risk_budget_optimization.Rnw:368-370
+### code chunk number 29: risk_budget_optimization.Rnw:367-369
 ###################################################
 plot.new()
 chart.RiskBudget(out, match.col="CVaR", risk.type="percentage", col=bluemono)
 
 
 ###################################################
-### code chunk number 30: risk_budget_optimization.Rnw:373-375
+### code chunk number 30: risk_budget_optimization.Rnw:372-374
 ###################################################
 plot.new()
 chart.RiskBudget(out, match.col="CVaR", risk.type="absolute", col=bluemono)

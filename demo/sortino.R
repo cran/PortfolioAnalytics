@@ -54,6 +54,6 @@ SortinoRebalance <- optimize.portfolio.rebalancing(R=indexes[,1:4], constraints=
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
 #
-# $Id: sortino.R 3581 2015-01-07 13:12:49Z braverock $
+# $Id$
 #
 ###############################################################################

@@ -105,13 +105,13 @@ chart.Weights.optimize.portfolio.rebalancing <- function(object, ..., main="Weig
 
 
 ###############################################################################
-# R (http://r-project.org/) Numeric Methods for Optimization of Portfolios
+# R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2015 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
 #
-# $Id: chart.Weights.R 3581 2015-01-07 13:12:49Z braverock $
+# $Id$
 #
 ###############################################################################

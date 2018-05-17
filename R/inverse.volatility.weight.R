@@ -33,8 +33,12 @@ inverse.volatility.weight <- function(R, portfolio, ...){
       stop("number of assets is greater than number of columns in returns object")
     }
   }
-  
-  weights <- as.vector((1/StdDev(R))/sum(1/StdDev(R)))
+
+  # Here, max_sum will be 1.0 if not explicitly set by caller
+  max_sum <- get_constraints(portfolio)$max_sum
+
+  invVol <- 1 / StdDev(R)
+  weights <- max_sum * as.vector(invVol / sum(invVol))
   names(weights) <- names(assets)
   
   tmpout <- constrained_objective(w=weights, R=R, portfolio=portfolio, trace=TRUE, ...)
@@ -51,13 +55,13 @@ inverse.volatility.weight <- function(R, portfolio, ...){
 
 
 ###############################################################################
-# R (http://r-project.org/) Numeric Methods for Optimization of Portfolios
+# R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2015 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
 #
-# $Id: inverse.volatility.weight.R 3581 2015-01-07 13:12:49Z braverock $
+# $Id$
 #
 ###############################################################################

@@ -19,11 +19,13 @@
 equal.weight <- function(R, portfolio, ...){
   # Check for portfolio object passed in
   if(!is.portfolio(portfolio)) stop("portfolio object passed in must be of class 'portfolio'")
+
+  max_sum <- get_constraints(portfolio)$max_sum
   
   # get asset information for equal weight portfolio
   assets <- portfolio$assets
   nassets <- length(assets)
-  weights <- rep(1 / nassets, nassets)
+  weights <- rep(max_sum / nassets, nassets)
   names(weights) <- names(assets)
   
   # make sure the number of columns in R matches the number of assets
@@ -50,13 +52,13 @@ equal.weight <- function(R, portfolio, ...){
 
 
 ###############################################################################
-# R (http://r-project.org/) Numeric Methods for Optimization of Portfolios
+# R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2015 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
 #
-# $Id: equal.weight.R 3581 2015-01-07 13:12:49Z braverock $
+# $Id$
 #
 ###############################################################################
