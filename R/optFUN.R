@@ -1108,10 +1108,17 @@ gmv_opt_leverage <- function(R, constraints, moments, lambda, target, solver="qu
   wts <- roi.result$solution
   wts.final <- wts[1:N]
   
+  w_pos <-  wts[(N+1):(2*N)]
+  w_neg <- wts[(2*N+1):(3*N)]
+  
   weights <- wts.final
   names(weights) <- colnames(R)
   out <- list()
   out$weights <- weights
+  
+  out$w_pos <- w_pos
+  out$w_neg <- w_neg
+  
   out$out <- roi.result$objval
   obj_vals <- list()
   # Calculate the objective values here so that we can use the moments$mean
