@@ -4,13 +4,21 @@
 \alias{meanvar.efficient.frontier}
 \title{Generate the efficient frontier for a mean-variance portfolio}
 \usage{
-meanvar.efficient.frontier(portfolio, R, n.portfolios = 25,
-  risk_aversion = NULL, ...)
+meanvar.efficient.frontier(
+  portfolio,
+  R,
+  optimize_method = "ROI",
+  n.portfolios = 25,
+  risk_aversion = NULL,
+  ...
+)
 }
 \arguments{
 \item{portfolio}{a portfolio object with constraints created via \code{\link{portfolio.spec}}}
 
 \item{R}{an xts or matrix of asset returns}
+
+\item{optimize_method}{the optimize method to get the efficient frontier, default is ROI}
 
 \item{n.portfolios}{number of portfolios to plot along the efficient frontier}
 

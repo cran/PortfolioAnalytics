@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -18,7 +18,7 @@
 #' required argument to \code{portfolio.spec} is \code{assets}.
 #' 
 #' The portfolio object contains the following elements:
-#' \itemize{
+#' \describe{
 #' \item{\code{assets}}{ named vector of the seed weights}
 #' \item{\code{category_labels}}{ character vector to categorize the assets by sector, geography, etc.}
 #' \item{\code{weight_seq}}{ sequence of weights used by \code{\link{random_portfolios}}. See \code{\link{generatesequence}}}
@@ -28,6 +28,7 @@
 #' }
 #' 
 #' @param assets number of assets, or optionally a named vector of assets specifying seed weights. If seed weights are not specified, an equal weight portfolio will be assumed.
+#' @param name give the portfolio a name, the default name will be 'portfolio'
 #' @param category_labels character vector to categorize assets by sector, industry, geography, market-cap, currency, etc. Default NULL
 #' @param weight_seq seed sequence of weights, see \code{\link{generatesequence}} Default NULL
 #' @param message TRUE/FALSE. The default is message=FALSE. Display messages if TRUE.
@@ -43,7 +44,7 @@
 #' pspec <- portfolio.spec(assets=colnames(edhec))
 #' pspec <- portfolio.spec(assets=10, weight_seq=generatesequence())
 #' @export
-portfolio.spec <- function(assets=NULL, category_labels=NULL, weight_seq=NULL, message=FALSE) {
+portfolio.spec <- function(assets=NULL, name = 'portfolio', category_labels=NULL, weight_seq=NULL, message=FALSE) {
   # portfolio.spec is based on the v1_constraint object, but removes
   # constraint specification
   if (is.null(assets)) {
@@ -100,6 +101,7 @@ portfolio.spec <- function(assets=NULL, category_labels=NULL, weight_seq=NULL, m
   ## now structure and return
   return(structure(
     list(
+      name = name,
       assets = assets,
       category_labels = category_labels,
       weight_seq = weight_seq,
@@ -136,7 +138,7 @@ is.portfolio <- function( x ) {
 #' @param portfolios list of portfolios created by
 #' \code{combine.portfolios} with corresponding regimes
 #' @return a \code{regime.portfolios} object with the following elements
-#' \itemize{
+#' \describe{
 #'     \item{regime: }{An xts object of the regime}
 #'     \item{portfolio: }{List of portfolios corresponding to the regime}
 #'   }

@@ -5,8 +5,13 @@
 \alias{random_portfolios_v2}
 \title{version 2 generate an arbitary number of constrained random portfolios}
 \usage{
-random_portfolios(portfolio, permutations = 100, rp_method = "sample",
-  eliminate = TRUE, ...)
+random_portfolios(
+  portfolio,
+  permutations = 100,
+  rp_method = "sample",
+  eliminate = TRUE,
+  ...
+)
 }
 \arguments{
 \item{portfolio}{an object of class 'portfolio' specifying the constraints for the optimization, see \code{\link{portfolio.spec}}}
@@ -28,7 +33,7 @@ See details.
 }
 \details{
 Random portfolios can be generate using one of three methods.
-\itemize{
+\describe{
   \item{sample: }{The 'sample' method to generate random portfolios is based
   on an idea pioneerd by Pat Burns. This is the most flexible method, but 
   also the slowest, and can generate portfolios to satisfy leverage, box, 

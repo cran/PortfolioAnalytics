@@ -1,5 +1,5 @@
 
-chart.Weights.pso <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
+chart.Weight.pso <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
   
   if(!inherits(object, "optimize.portfolio.pso")) stop("object must be of class 'optimize.portfolio.pso'")
   
@@ -75,8 +75,8 @@ chart.Weights.pso <- function(object, ..., neighbors = NULL, main="Weights", las
 
 #' @rdname chart.Weights
 #' @method chart.Weights optimize.portfolio.pso
-#' @S3method chart.Weights optimize.portfolio.pso
-chart.Weights.optimize.portfolio.pso <- chart.Weights.pso
+#' @export
+chart.Weights.optimize.portfolio.pso <- chart.Weight.pso
 
 chart.Scatter.pso <- function(object, ..., neighbors=NULL, return.col="mean", risk.col="ES", chart.assets=FALSE, element.color = "darkgray", cex.axis=0.8, xlim=NULL, ylim=NULL){
   if(!inherits(object, "optimize.portfolio.pso")) stop("object must be of class 'optimize.portfolio.pso'")
@@ -205,7 +205,7 @@ chart.Scatter.pso <- function(object, ..., neighbors=NULL, return.col="mean", ri
 
 #' @rdname chart.RiskReward
 #' @method chart.RiskReward optimize.portfolio.pso
-#' @S3method chart.RiskReward optimize.portfolio.pso
+#' @export
 chart.RiskReward.optimize.portfolio.pso <- chart.Scatter.pso
 
 
@@ -216,14 +216,14 @@ charts.pso <- function(pso, return.col="mean", risk.col="ES", chart.assets=FALSE
   par(mar=c(4,4,4,2))
   chart.Scatter.pso(object=pso, return.col=return.col, risk.col=risk.col, chart.assets=chart.assets, element.color=element.color, cex.axis=cex.axis, main=main, xlim=xlim, ylim=ylim, ...=...)
   par(mar=c(2,4,0,2))
-  chart.Weights.pso(object=pso, neighbors=neighbors, las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis, ...=..., main="")
+  chart.Weight.pso(object=pso, neighbors=neighbors, las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis, ...=..., main="")
   par(op)
 }
 
 
 #' @rdname plot
 #' @method plot optimize.portfolio.pso
-#' @S3method plot optimize.portfolio.pso
+#' @export
 plot.optimize.portfolio.pso <- function(x, ..., return.col="mean", risk.col="ES", chart.assets=FALSE, cex.axis=0.8, element.color="darkgray", neighbors=NULL, main="PSO.Portfolios", xlim=NULL, ylim=NULL){
   charts.pso(pso=x, return.col=return.col, risk.col=risk.col, chart.assets=FALSE, cex.axis=cex.axis, element.color=element.color, neighbors=neighbors, main=main, xlim=xlim, ylim=ylim, ...=...)
 }
@@ -232,7 +232,7 @@ plot.optimize.portfolio.pso <- function(x, ..., return.col="mean", risk.col="ES"
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

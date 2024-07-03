@@ -24,7 +24,7 @@ EntropyProg(p, A = NULL, b = NULL, Aeq, beq, verbose = FALSE)
 }
 \value{
 a list with
-\itemize{ 
+\describe{ 
   \item{\code{p_}:}{ revised probabilities based on entropy pooling}
    \item{\code{optimizationPerformance}:}{ a list with status of optimization, 
    value, number of iterations, and sum of probabilities}
@@ -57,8 +57,8 @@ Compute posterior (=change of measure) with Entropy Pooling, as described in
 }
 \references{
 A. Meucci - "Fully Flexible Views: Theory and Practice". See page 22 for illustration of numerical implementation
-Symmys site containing original MATLAB source code \url{http://www.symmys.com}
-NLOPT open-source optimization site containing background on algorithms \url{http://ab-initio.mit.edu/wiki/index.php/NLopt}
+Symmys site containing original MATLAB source code \url{https://www.arpm.co/}
+NLOPT open-source optimization site containing background on algorithms \url{https://nlopt.readthedocs.io/en/latest/}
 We use the information-theoretic estimator of Kitamur and Stutzer (1997). 
 Reversing 'p' and 'p_' leads to the empirical likelihood" estimator of Qin and Lawless (1994). 
 See Robertson et al, "Forecasting Using Relative Entropy" (2002) for more theory

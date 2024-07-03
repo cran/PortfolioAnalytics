@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -602,6 +602,7 @@ constrained_objective <- constrained_objective_v2 <- function(w, R, portfolio, .
                  if(!inherits(objective,"risk_budget_objective") & is.null(objective$arguments$portfolio_method) & is.null(nargs$portfolio_method)) tmp_args$portfolio_method='single'
                  if(is.null(objective$arguments$invert)) tmp_args$invert = FALSE
                },
+               EQS = {}, ## xinran
                turnover = {
                  fun = match.fun(turnover) # turnover function included in objectiveFUN.R
                },

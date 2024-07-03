@@ -1,5 +1,5 @@
 
-chart.Weights.ROI <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
+chart.Weight.ROI <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
   
   if(!inherits(object, "optimize.portfolio.ROI")) stop("object must be of class 'optimize.portfolio.ROI'")
   
@@ -75,8 +75,8 @@ chart.Weights.ROI <- function(object, ..., neighbors = NULL, main="Weights", las
 
 #' @rdname chart.Weights
 #' @method chart.Weights optimize.portfolio.ROI
-#' @S3method chart.Weights optimize.portfolio.ROI
-chart.Weights.optimize.portfolio.ROI <- chart.Weights.ROI
+#' @export
+chart.Weights.optimize.portfolio.ROI <- chart.Weight.ROI
 
 
 chart.Scatter.ROI <- function(object, ..., neighbors=NULL, return.col="mean", risk.col="ES", chart.assets=FALSE, element.color = "darkgray", cex.axis=0.8, xlim=NULL, ylim=NULL, rp=FALSE){
@@ -146,7 +146,7 @@ chart.Scatter.ROI <- function(object, ..., neighbors=NULL, return.col="mean", ri
 
 #' @rdname chart.RiskReward
 #' @method chart.RiskReward optimize.portfolio.ROI
-#' @S3method chart.RiskReward optimize.portfolio.ROI
+#' @export
 chart.RiskReward.optimize.portfolio.ROI <- chart.Scatter.ROI
 
 
@@ -157,13 +157,13 @@ charts.ROI <- function(ROI, rp=FALSE, risk.col="ES", return.col="mean", chart.as
   par(mar=c(4,4,4,2))
   chart.Scatter.ROI(object=ROI, rp=rp, return.col=return.col, risk.col=risk.col, ..., chart.assets=chart.assets, element.color=element.color, cex.axis=cex.axis, main=main, xlim=xlim, ylim=ylim)
   par(mar=c(2,4,0,2))
-  chart.Weights.ROI(object=ROI, neighbors=neighbors, ..., main="", las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis)
+  chart.Weight.ROI(object=ROI, neighbors=neighbors, ..., main="", las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis)
   par(op)
 }
 
 #' @rdname plot
 #' @method plot optimize.portfolio.ROI
-#' @S3method plot optimize.portfolio.ROI
+#' @export
 plot.optimize.portfolio.ROI <- function(x, ..., rp=FALSE, risk.col="ES", return.col="mean", chart.assets=FALSE, element.color="darkgray", neighbors=NULL, main="ROI.Portfolios", xlim=NULL, ylim=NULL){
   charts.ROI(ROI=x, rp=rp, risk.col=risk.col, return.col=return.col, chart.assets=chart.assets, main=main, xlim=xlim, ylim=ylim, ...)
 }
@@ -172,7 +172,7 @@ plot.optimize.portfolio.ROI <- function(x, ..., rp=FALSE, risk.col="ES", return.
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

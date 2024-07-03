@@ -4,16 +4,25 @@
 \alias{chart.GroupWeights}
 \title{Chart weights by group or category}
 \usage{
-chart.GroupWeights(object, ..., grouping = c("groups", "category"),
-  plot.type = "line", main = "Group Weights", las = 3, xlab = NULL,
-  cex.lab = 0.8, element.color = "darkgray", cex.axis = 0.8)
+chart.GroupWeights(
+  object,
+  ...,
+  grouping = c("groups", "category"),
+  plot.type = "line",
+  main = "Group Weights",
+  las = 3,
+  xlab = NULL,
+  cex.lab = 0.8,
+  element.color = "darkgray",
+  cex.axis = 0.8
+)
 }
 \arguments{
 \item{object}{object of class \code{optimize.portfolio}.}
 
 \item{\dots}{passthrough parameters to \code{\link{plot}}.}
 
-\item{grouping}{\itemize{
+\item{grouping}{\describe{
   \item{groups: }{group the weights by group constraints.}
   \item{category_labels: }{group the weights by category_labels in the \code{portfolio} object.}
 }}

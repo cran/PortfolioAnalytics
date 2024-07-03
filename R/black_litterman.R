@@ -14,7 +14,7 @@
 #' @return	BLSigma  [matrix] (N x N) posterior covariance matrix.
 #'
 #' @references
-#' A. Meucci - "Exercises in Advanced Risk and Portfolio Management" \url{http://symmys.com/node/170}.
+#' A. Meucci - "Exercises in Advanced Risk and Portfolio Management" \url{https://www.arpm.co/articles/exercises-in-advanced-risk-and-portfolio-management/}.
 #'
 #' See Meucci's script for "BlackLittermanFormula.m"
 #'
@@ -42,13 +42,13 @@ BlackLittermanFormula = function( Mu, Sigma, P, v, Omega)
 #' @param Sigma an N x N matrix of the prior covariance matrix. The sample 
 #' covariance is used if \code{Sigma=NULL}.
 #' @param Views a vector of length K of the views
-#' @return \itemize{
+#' @return \describe{
 #'   \item{BLMu:}{ posterior expected values}
 #'   \item{BLSigma:}{ posterior covariance matrix}
 #' }
 #' @author Ross Bennett, Xavier Valls
 #' @references
-#' A. Meucci - "Exercises in Advanced Risk and Portfolio Management" \url{http://symmys.com/node/170}.
+#' A. Meucci - "Exercises in Advanced Risk and Portfolio Management" \url{https://www.arpm.co/articles/exercises-in-advanced-risk-and-portfolio-management/}.
 #' @seealso \code{\link{BlackLittermanFormula}}
 #' @export
 black.litterman <- function(R, P, Mu=NULL, Sigma=NULL, Views=NULL){

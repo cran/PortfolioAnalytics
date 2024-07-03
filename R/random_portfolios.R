@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -373,7 +373,7 @@ randomize_portfolio <- randomize_portfolio_v2 <- function (portfolio, max_permut
 #' 
 #' @details
 #' Random portfolios can be generate using one of three methods.
-#' \itemize{
+#' \describe{
 #'   \item{sample: }{The 'sample' method to generate random portfolios is based
 #'   on an idea pioneerd by Pat Burns. This is the most flexible method, but 
 #'   also the slowest, and can generate portfolios to satisfy leverage, box, 

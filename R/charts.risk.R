@@ -56,7 +56,8 @@ chart.RiskBudget <- function(object, ...){
 
 #' @rdname chart.RiskBudget
 #' @method chart.RiskBudget optimize.portfolio
-#' @S3method chart.RiskBudget optimize.portfolio
+
+#' @export
 chart.RiskBudget.optimize.portfolio <- function(object, ..., neighbors=NULL, risk.type="absolute", main="Risk Contribution", ylab="", xlab=NULL, cex.axis=0.8, cex.lab=0.8, element.color="darkgray", las=3, ylim=NULL){
   if(!inherits(object, "optimize.portfolio")) stop("object must be of class optimize.portfolio")
   portfolio <- object$portfolio
@@ -214,7 +215,8 @@ chart.RiskBudget.optimize.portfolio <- function(object, ..., neighbors=NULL, ris
 
 #' @rdname chart.RiskBudget
 #' @method chart.RiskBudget optimize.portfolio.rebalancing
-#' @S3method chart.RiskBudget optimize.portfolio.rebalancing
+
+#' @export
 chart.RiskBudget.optimize.portfolio.rebalancing <- function(object, ..., match.col="ES", risk.type="absolute", regime=NULL, main="Risk Contribution"){
   
   # Get the objective measures at each rebalance period
@@ -249,7 +251,8 @@ chart.RiskBudget.optimize.portfolio.rebalancing <- function(object, ..., match.c
 
 #' @rdname chart.RiskBudget
 #' @method chart.RiskBudget opt.list
-#' @S3method chart.RiskBudget opt.list
+
+#' @export
 chart.RiskBudget.opt.list <- function(object, ..., match.col="ES", risk.type="absolute", main="Risk Budget", plot.type="line", cex.axis=0.8, cex.lab=0.8, element.color="darkgray", las=3, ylim=NULL, colorset=NULL, legend.loc=NULL, cex.legend=0.8){
   if(!inherits(object, "opt.list")) stop("object must be of class 'opt.list'")
   
@@ -461,7 +464,7 @@ barplotRiskBudget <- function(object, ..., match.col="ES", risk.type="absolute",
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

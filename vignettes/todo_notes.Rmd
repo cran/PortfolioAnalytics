@@ -1,0 +1,77 @@
+---
+title: "PortfolioAnalytics Notes"
+author: "Brian G. Peterson"
+date: updated `r format(Sys.time(), "%d %B %Y")`
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# TODO
+
+This document contains some notes about my **TODO** list of possible advanced capabilities to be added to PortfolioAnalytics.  It is neither a promise nor a project plan, but rather some ideas of features and direction that I think would be additive to the tool set and the field of portfolio construction decision making.
+
+# asset selection cross validation
+
+  - what impact does a different asset selection have on the optimization?
+  - allow user to do sequential optimizations leaving *n* assets out of the optimization
+  - `sample()` should be able to construct the different portfolios
+  - construct a comparison report on top neighbor solutions
+  
+# OOS degradation
+
+  - in backtesting, you want to measure how the OOS strategy performed vs. the expectation
+  - build similar tools for portfolio construction
+  - evaluate rebalanced portfolios based on how they perform out of sample, and how the optimizer would choose differently on the next rebalancing period
+  - how do we make portfolio selection more robust out of sample?  (see neighbors discussion below)
+
+# tools to aid selection among neighbors in multi-objective optimization
+
+  - the top *n* portfolios in multi-objective optimizations are balancing several competing objectives
+  - multiple portfolios will show different trade offs
+  - user preferences may be weakly dominant, and so the "best" portfolio based on equal or slightly weighted objective may not really be the best available solution, especially out of sample.
+  
+# integrated storage of trials
+
+  - storing trials is important to evaluating multiple testing bias
+  - also important for reproducibility if results used in reporting
+  - allow for a trials/ directory in a project, and experiment notes about the trial
+    - typically `reason` and `short_reason` are what I use
+    - store assets, returns, portfolio object, optimization output
+    - construct a meaningful filename, e.g. `paste0('trials/results_trial_',format(Sys.time(),'%F_%R'),'.',reason_short,'.rda')`
+    - I have historically stored multiple variables, should this store an environment instead so you can examine multiple trials?
+    
+# integrate mcsim and other confidence interval methods
+
+  - Monte Carlo analysis and influence function analysis can answer question about confidence intervals for returns and risk metrics on a generated portfolio
+  - returns of portfolio could be processed by mcsim() or similar
+
+# multiple solvers in portfolio sets
+
+  - store preferred solver in portfolio spec
+  - benchmark portfolios like min variance or min ES or Markowitz portfolio could be solved quickly
+  - target portfolios with more complex objectives could use `DEoptim`, `random`, or `mco`
+
+# hyper parameter tuning
+
+  - choice of solver parameters can vastly change speed and quality of solutions for global solvers
+  - build tools for tuning hyper parameters of each solver
+  - build tools for comparing different solvers
+  - include convergence charts for different solvers and hyper parameters
+
+# portfolios of unequal length
+
+  - assets start and stop being available to trade all the time
+  - add support for either assets with longer /shorter histories
+  - and support for assets which close
+  - and support for assets that cease existence
+  - shrink the available universe and maintain things like full investment constraint
+  - support edge case of n=1
+  
+# FMMC integration
+

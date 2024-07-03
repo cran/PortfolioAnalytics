@@ -1,5 +1,5 @@
 
-chart.Weights.GenSA <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
+chart.Weight.GenSA <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
   
   if(!inherits(object, "optimize.portfolio.GenSA")) stop("object must be of class 'optimize.portfolio.GenSA'")
   
@@ -75,8 +75,8 @@ chart.Weights.GenSA <- function(object, ..., neighbors = NULL, main="Weights", l
 
 #' @rdname chart.Weights
 #' @method chart.Weights optimize.portfolio.GenSA
-#' @S3method chart.Weights optimize.portfolio.GenSA
-chart.Weights.optimize.portfolio.GenSA <- chart.Weights.GenSA
+#' @export
+chart.Weights.optimize.portfolio.GenSA <- chart.Weight.GenSA
 
 chart.Scatter.GenSA <- function(object, ..., neighbors=NULL, return.col="mean", risk.col="ES", chart.assets=FALSE, element.color="darkgray", cex.axis=0.8, ylim=NULL, xlim=NULL, rp=FALSE){
   
@@ -144,7 +144,7 @@ chart.Scatter.GenSA <- function(object, ..., neighbors=NULL, return.col="mean", 
 
 #' @rdname chart.RiskReward
 #' @method chart.RiskReward optimize.portfolio.GenSA
-#' @S3method chart.RiskReward optimize.portfolio.GenSA
+#' @export
 chart.RiskReward.optimize.portfolio.GenSA <- chart.Scatter.GenSA
 
 
@@ -155,14 +155,14 @@ charts.GenSA <- function(GenSA, rp=FALSE, return.col="mean", risk.col="ES", char
   par(mar=c(4,4,4,2))
   chart.Scatter.GenSA(object=GenSA, rp=rp, return.col=return.col, risk.col=risk.col, chart.assets=chart.assets, element.color=element.color, cex.axis=cex.axis, main=main, xlim=xlim, ylim=ylim, ...=...)
   par(mar=c(2,4,0,2))
-  chart.Weights.GenSA(object=GenSA, neighbors=neighbors, las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis, ...=..., main="")
+  chart.Weight.GenSA(object=GenSA, neighbors=neighbors, las=3, xlab=NULL, cex.lab=1, element.color=element.color, cex.axis=cex.axis, ...=..., main="")
   par(op)
 }
 
 
 #' @rdname plot
 #' @method plot optimize.portfolio.GenSA
-#' @S3method plot optimize.portfolio.GenSA
+#' @export
 plot.optimize.portfolio.GenSA <- function(x, ..., rp=FALSE, return.col="mean", risk.col="ES", chart.assets=FALSE, cex.axis=0.8, element.color="darkgray", neighbors=NULL, main="GenSA.Portfolios", xlim=NULL, ylim=NULL){
   charts.GenSA(GenSA=x, rp=rp, return.col=return.col, risk.col=risk.col, chart.assets=chart.assets, cex.axis=cex.axis, element.color=element.color, neighbors=neighbors, main=main, xlim=xlim, ylim=ylim, ...=...)
 }
@@ -171,7 +171,7 @@ plot.optimize.portfolio.GenSA <- function(x, ..., rp=FALSE, return.col="mean", r
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

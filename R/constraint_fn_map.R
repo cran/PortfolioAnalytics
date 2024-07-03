@@ -24,8 +24,8 @@
 #' @param verbose print error messages for debuggin purposes
 #' @param \dots any other passthru parameters
 #' @return 
-#' \itemize{
-#' \item{weights: }{vector of transformed weights meeting constraints.}
+#' \describe{
+#' \item{weights:}{vector of transformed weights meeting constraints.}
 #' \item{min: }{vector of min box constraints that may have been modified if relax=TRUE.}
 #' \item{max: }{vector of max box constraints that may have been modified if relax=TRUE.}
 #' \item{cLO: }{vector of lower bound group constraints that may have been modified if relax=TRUE.}
@@ -1102,7 +1102,7 @@ rp_position_limit <- function(weights, max_pos=NULL, max_pos_long=NULL, max_pos_
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

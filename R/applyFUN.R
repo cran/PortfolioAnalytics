@@ -51,6 +51,11 @@ applyFUN <- function(R, weights, FUN="mean", arguments){
            if(is.null(nargs$portfolio_method)) nargs$portfolio_method='single'
            if(is.null(nargs$invert)) nargs$invert = FALSE
          },
+         # EQS = {
+           # fun = match.fun(EQS)
+           # if(is.null(nargs$portfolio_method)) nargs$portfolio_method='single'
+           # if(is.null(nargs$invert)) nargs$invert = FALSE
+         # },
 {   # see 'S Programming p. 67 for this matching
   fun <- try(match.fun(FUN))
 }
@@ -135,6 +140,11 @@ scatterFUN <- function(R, FUN, arguments=NULL){
            if(is.null(nargs$portfolio_method)) nargs$portfolio_method='single'
            if(is.null(nargs$invert)) nargs$invert = FALSE
          },
+         # EQS = {
+           # fun = match.fun(EQS)
+           # if(is.null(nargs$portfolio_method)) nargs$portfolio_method='single'
+           # if(is.null(nargs$invert)) nargs$invert = FALSE
+         # },
 {   # see 'S Programming p. 67 for this matching
   fun <- try(match.fun(FUN))
 }
@@ -158,7 +168,7 @@ scatterFUN <- function(R, FUN, arguments=NULL){
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

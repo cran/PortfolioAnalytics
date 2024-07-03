@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -181,7 +181,7 @@ constraint <- constraint_v2 <- function(type, enabled=TRUE, ..., constrclass="v2
 #' This is the main function for adding and/or updating constraints to the \code{\link{portfolio.spec}} object.
 #' 
 #' The following constraint types may be specified:
-#' \itemize{
+#' \describe{
 #' \item{\code{weight_sum}, \code{weight}, \code{leverage}}{ Specify constraint on the sum of the weights, see \code{\link{weight_sum_constraint}} }
 #' \item{\code{full_investment}}{ Special case to set \code{min_sum=1} and \code{max_sum=1} of weight sum constraints }
 #' \item{\code{dollar_neutral}, \code{active}}{ Special case to set \code{min_sum=0} and \code{max_sum=0} of weight sum constraints }
@@ -391,6 +391,12 @@ add.constraint <- function(portfolio, type, enabled=TRUE, message=FALSE, ..., in
                                                                               enabled=enabled,
                                                                               message=message,
                                                                               ...=...)
+         },
+         filter = {tmp_constraint <- filter_constraint(assets=assets,
+                                                                 type=type,
+                                                                 enabled=enabled,
+                                                                 message=message,
+                                                                 ...=...)
          },
          # Do nothing and return the portfolio object if type is NULL
          null = {return(portfolio)}
@@ -892,17 +898,21 @@ return_constraint <- function(type="return", return_target, enabled=TRUE, messag
   return(Constraint)
 }
 
-#' constructor for position_limit_constraint
+#' constructor for filter_constraint
 #' 
-#' This function is called by add.constraint when type="position_limit" is specified, \code{\link{add.constraint}}
-#' Allows the user to specify the maximum number of positions (i.e. number of assets with non-zero weights)
-#' as well as the maximum number of long and short positions.
+#' This function is called by add.constraint when type="filter" is specified, \code{\link{add.constraint}}
+#' 
+#' Allows the user to specify a filter function which will take returns, weights,
+#' and constraints as inputs, and can return a modified weights vector as output.
+#' 
+#' Fundamentally, it could be used to filter out certain assets, or to ensure 
+#' that they must be long or short.
+#' 
+#' Typically, filter functions will be called by the random portfolio simulation
+#' function or via the fn_map function.
 #' 
 #' @param type character type of the constraint
-#' @param assets named vector of assets specifying initial weights
-#' @param max_pos maximum number of assets with non-zero weights
-#' @param max_pos_long maximum number of assets with long (i.e. buy) positions
-#' @param max_pos_short maximum number of assets with short (i.e. sell) positions
+#' @param filter_name either a function to apply, or a name of a function to apply
 #' @param enabled TRUE/FALSE
 #' @param message TRUE/FALSE. The default is message=FALSE. Display messages if TRUE.
 #' @param \dots any other passthru parameters to specify position limit constraints
@@ -918,49 +928,12 @@ return_constraint <- function(type="return", return_target, enabled=TRUE, messag
 #' pspec <- add.constraint(portfolio=pspec, type="position_limit", max_pos=3)
 #' pspec <- add.constraint(portfolio=pspec, type="position_limit", max_pos_long=3, max_pos_short=1)
 #' @export
-position_limit_constraint <- function(type="position_limit", assets, max_pos=NULL, max_pos_long=NULL, max_pos_short=NULL, enabled=TRUE, message=FALSE, ...){
-  # Get the length of the assets vector
-  nassets <- length(assets)
+position_limit_constraint <- function(type="position_limit", filter_name=NULL, enabled=TRUE, message=FALSE, ...){
   
-  # Checks for max_pos
-  if(!is.null(max_pos)){
-    if(length(max_pos) != 1) stop("max_pos must be a scalar value of length 1")
-    if(max_pos < 0) stop("max_pos must be a positive value")
-    if(max_pos > nassets){
-      warning("max_pos must be less than or equal to the number of assets")
-      max_pos <- nassets
-    }
-    # coerce to integer
-    max_pos <- as.integer(max_pos)
-  }
-  
-  # Checks for max_pos_long
-  if(!is.null(max_pos_long)){
-    if(length(max_pos_long) != 1) stop("max_pos_long must be a scalar value of length 1")
-    if(max_pos_long < 0) stop("max_pos_long must be a positive value")
-    if(max_pos_long > nassets){
-      warning("max_pos_long must be less than or equal to the number of assets")
-      max_pos_long <- nassets
-    }
-    # coerce to integer
-    max_pos_long <- as.integer(max_pos_long)
-  }
-  
-  # Checks for max_pos_short
-  if(!is.null(max_pos_short)){
-    if(length(max_pos_short) != 1) stop("max_pos_short must be a scalar value of length 1")
-    if(max_pos_short < 0) stop("max_pos_short must be a positive value")
-    if(max_pos_short > nassets){
-      warning("max_pos_short must be less than or equal to the number of assets")
-      max_pos_short <- nassets
-    }
-    # coerce to integer
-    max_pos_short <- as.integer(max_pos_short)
-  }
+  # check that filter_name either is a function or describes a function
+  # 
   Constraint <- constraint_v2(type, enabled=enabled, constrclass="position_limit_constraint", ...)
-  Constraint$max_pos <- max_pos
-  Constraint$max_pos_long <- max_pos_long
-  Constraint$max_pos_short <- max_pos_short
+  Constraint$filter_name <- filter_name
   return(Constraint)
 }
 
@@ -1112,7 +1085,7 @@ leverage_exposure_constraint <- function(type="leverage_exposure", leverage=NULL
 #' @param ... any other passthru parameters, used to call \code{\link{constraint}}
 #' @author bpeterson
 #' @method update constraint
-#' @S3method update constraint
+
 #' @export
 update.constraint <- function(object, ...){
   constraints <- object

@@ -4,8 +4,14 @@
 \alias{add.constraint}
 \title{General interface for adding and/or updating optimization constraints.}
 \usage{
-add.constraint(portfolio, type, enabled = TRUE, message = FALSE, ...,
-  indexnum = NULL)
+add.constraint(
+  portfolio,
+  type,
+  enabled = TRUE,
+  message = FALSE,
+  ...,
+  indexnum = NULL
+)
 }
 \arguments{
 \item{portfolio}{an object of class 'portfolio' to add the constraint to, specifying the constraints for the optimization, see \code{\link{portfolio.spec}}}
@@ -25,7 +31,7 @@ This is the main function for adding and/or updating constraints to the \code{\l
 }
 \details{
 The following constraint types may be specified:
-\itemize{
+\describe{
 \item{\code{weight_sum}, \code{weight}, \code{leverage}}{ Specify constraint on the sum of the weights, see \code{\link{weight_sum_constraint}} }
 \item{\code{full_investment}}{ Special case to set \code{min_sum=1} and \code{max_sum=1} of weight sum constraints }
 \item{\code{dollar_neutral}, \code{active}}{ Special case to set \code{min_sum=0} and \code{max_sum=0} of weight sum constraints }

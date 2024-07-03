@@ -35,6 +35,7 @@
 #' 
 #' @param object object to chart.
 #' @param \dots passthru parameters to \code{\link{plot}}
+#' @param optimize_method the optimize method to get the efficient frontier
 #' @param match.col string name of column to use for risk (horizontal axis).
 #' \code{match.col} must match the name of an objective measure in the 
 #' \code{objective_measures} or \code{opt_values} slot in the object created 
@@ -54,7 +55,7 @@
 #' \code{chart.assets} must be \code{TRUE} to plot asset names.
 #' @param pch.assets plotting character of the assets, same as in \code{\link{plot}}.
 #' @param cex.assets numerical value giving the amount by which the asset points and labels should be magnified relative to the default.
-#' @author Ross Bennett
+#' @author Ross Bennett, Xinran Zhao
 #' @rdname chart.EfficientFrontier
 #' @export
 chart.EfficientFrontier <- function(object, ...){
@@ -62,9 +63,120 @@ chart.EfficientFrontier <- function(object, ...){
 }
 
 #' @rdname chart.EfficientFrontier
+#' @method chart.EfficientFrontier optimize.portfolio.CVXR
+#' @export
+chart.EfficientFrontier.optimize.portfolio.CVXR <- function(object, ..., optimize_method='CVXR', match.col="ES", n.portfolios=25, xlim=NULL, ylim=NULL, cex.axis=0.8, element.color="darkgray", main="Efficient Frontier", RAR.text="SR", rf=0, tangent.line=TRUE, cex.legend=0.8, chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8){
+  if(!inherits(object, "optimize.portfolio.CVXR")) stop("object must be of class optimize.portfolio.CVXR")
+  
+  portf <- object$portfolio
+  R <- object$R
+  if(is.null(R)) stop(paste("Not able to get asset returns from", object))
+  wts <- object$weights
+  objectclass <- class(object)[1]
+  
+  # objnames <- unlist(lapply(portf$objectives, function(x) x$name))
+  # if(!(match.col %in% objnames)){
+  #   stop("match.col must match an objective name")
+  # }
+  
+  # get the optimal return and risk metrics
+  xtract <- extractStats(object=object)
+  columnames <- names(xtract)
+  if(!(("mean") %in% columnames)){
+    # we need to calculate the mean given the optimal weights
+    opt_ret <- applyFUN(R=R, weights=wts, FUN="mean")
+  } else {
+    opt_ret <- xtract["mean"]
+  }
+  # get the match.col column
+  mtc <- pmatch(match.col, columnames)
+  if(is.na(mtc)) {
+    mtc <- pmatch(paste(match.col,match.col,sep='.'), columnames)
+  }
+  if(is.na(mtc)){
+    # if(is.na(mtc)) stop("could not match match.col with column name of extractStats output")
+    opt_risk <- applyFUN(R=R, weights=wts, FUN=match.col)
+  } else {
+    opt_risk <- xtract[mtc]
+  }
+  
+  # get the data to plot scatter of asset returns
+  asset_ret <- scatterFUN(R=R, FUN="mean")
+  asset_risk <- scatterFUN(R=R, FUN=match.col)
+  rnames <- colnames(R)
+  
+  if(match.col == "StdDev"){
+    frontier <- meanvar.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
+    rar <- "SR"
+  }
+  if(match.col %in% c("ETL", "ES", "CVaR")){
+    frontier <- meanetl.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
+    rar <- "STARR"
+  }
+  if(match.col =="EQS"){
+    frontier <- meaneqs.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
+    rar <- "EQSratio"
+  }
+  
+  # data points to plot the frontier
+  x.f <- frontier[, match.col]
+  y.f <- frontier[, "mean"]
+  
+  # Points for the Sharpe Ratio ((mu - rf) / StdDev) or STARR ((mu - rf) / ETL)
+  if(!is.null(rf)){
+    sr <- (y.f - rf) / (x.f)
+    idx.maxsr <- which.max(sr)
+    srmax <- sr[idx.maxsr]
+  }
+  
+  # set the x and y limits
+  if(is.null(xlim)){
+    xlim <- range(c(x.f, asset_risk))
+    # xlim[1] <- xlim[1] * 0.8
+    xlim[1] <- 0
+    xlim[2] <- xlim[2] * 1.15
+  }
+  if(is.null(ylim)){
+    ylim <- range(c(y.f, asset_ret))
+    # ylim[1] <- ylim[1] * 0.9
+    ylim[1] <- 0
+    ylim[2] <- ylim[2] * 1.1
+  }
+  
+  # plot the efficient frontier line
+  plot(x=x.f, y=y.f, ylab="Mean", xlab=match.col, main=main, xlim=xlim, ylim=ylim, axes=FALSE, ...)
+  
+  # Add the global minimum variance or global minimum ETL portfolio
+  points(x=x.f[1], y=y.f[1], pch=16)
+  
+  if(chart.assets){
+    # risk-return scatter of the assets
+    points(x=asset_risk, y=asset_ret, pch=pch.assets, cex=cex.assets)
+    if(labels.assets) text(x=asset_risk, y=asset_ret, labels=rnames, pos=4, cex=cex.assets)
+  }
+  
+  # plot the optimal portfolio
+  points(opt_risk, opt_ret, col="blue", pch=16) # optimal
+  text(x=opt_risk, y=opt_ret, labels="Optimal",col="blue", pos=4, cex=0.8)
+  if(!is.null(rf)){
+    # Plot tangency line and points at risk-free rate and tangency portfolio
+    if(tangent.line) abline(rf, srmax, lty=2)
+    points(0, rf, pch=16)
+    points(x.f[idx.maxsr], y.f[idx.maxsr], pch=16)
+    # text(x=x.f[idx.maxsr], y=y.f[idx.maxsr], labels="T", pos=4, cex=0.8)
+    # Add lengend with max Sharpe Ratio and risk-free rate
+    legend("topleft", paste(RAR.text, " = ", signif(srmax,3), sep = ""), bty = "n", cex=cex.legend)
+    legend("topleft", inset = c(0,0.05), paste("rf = ", signif(rf,3), sep = ""), bty = "n", cex=cex.legend)
+  }
+  axis(1, cex.axis = cex.axis, col = element.color)
+  axis(2, cex.axis = cex.axis, col = element.color)
+  box(col = element.color)
+}
+
+#' @rdname chart.EfficientFrontier
 #' @method chart.EfficientFrontier optimize.portfolio.ROI
-#' @S3method chart.EfficientFrontier optimize.portfolio.ROI
-chart.EfficientFrontier.optimize.portfolio.ROI <- function(object, ..., match.col="ES", n.portfolios=25, xlim=NULL, ylim=NULL, cex.axis=0.8, element.color="darkgray", main="Efficient Frontier", RAR.text="SR", rf=0, tangent.line=TRUE, cex.legend=0.8, chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8){
+#' @export
+chart.EfficientFrontier.optimize.portfolio.ROI <- function(object, ..., optimize_method='ROI', match.col="ES", n.portfolios=25, xlim=NULL, ylim=NULL, cex.axis=0.8, element.color="darkgray", main="Efficient Frontier", RAR.text="SR", rf=0, tangent.line=TRUE, cex.legend=0.8, chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8){
   if(!inherits(object, "optimize.portfolio.ROI")) stop("object must be of class optimize.portfolio.ROI")
   
   portf <- object$portfolio
@@ -105,11 +217,11 @@ chart.EfficientFrontier.optimize.portfolio.ROI <- function(object, ..., match.co
   rnames <- colnames(R)
   
   if(match.col %in% c("ETL", "ES", "CVaR")){
-    frontier <- meanetl.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios)
+    frontier <- meanetl.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
     rar <- "STARR"
   }
   if(match.col == "StdDev"){
-    frontier <- meanvar.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios)
+    frontier <- meanvar.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
     rar <- "SR"
   }
   # data points to plot the frontier
@@ -169,7 +281,7 @@ chart.EfficientFrontier.optimize.portfolio.ROI <- function(object, ..., match.co
 
 #' @rdname chart.EfficientFrontier
 #' @method chart.EfficientFrontier optimize.portfolio
-#' @S3method chart.EfficientFrontier optimize.portfolio
+#' @export
 chart.EfficientFrontier.optimize.portfolio <- function(object, ..., match.col="ES", n.portfolios=25, xlim=NULL, ylim=NULL, cex.axis=0.8, element.color="darkgray", main="Efficient Frontier", RAR.text="SR", rf=0, tangent.line=TRUE, cex.legend=0.8, chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8){
   # This function will work with objects of class optimize.portfolio.DEoptim,
   # optimize.portfolio.random, and optimize.portfolio.pso
@@ -210,7 +322,7 @@ chart.EfficientFrontier.optimize.portfolio <- function(object, ..., match.col="E
   rnames <- colnames(R)
   
   # get the data of the efficient frontier
-  frontier <- extract.efficient.frontier(object=object, match.col=match.col, n.portfolios=n.portfolios)
+  frontier <- extract.efficient.frontier(object=object, match.col=match.col, n.portfolios=n.portfolios, ...=...)
   
   # data points to plot the frontier
   x.f <- frontier[, match.col]
@@ -295,7 +407,7 @@ chart.EF.Weights <- function(object, ...){
 
 #' @rdname chart.EF.Weights
 #' @method chart.EF.Weights efficient.frontier
-#' @S3method chart.EF.Weights efficient.frontier
+#' @export
 chart.EF.Weights.efficient.frontier <- function(object, ..., colorset=NULL, n.portfolios=25, by.groups=FALSE, match.col="ES", main="", cex.lab=0.8, cex.axis=0.8, cex.legend=0.8, legend.labels=NULL, element.color="darkgray", legend.loc="topright"){
   # using ideas from weightsPlot.R in fPortfolio package
   
@@ -420,7 +532,7 @@ chart.EF.Weights.efficient.frontier <- function(object, ..., colorset=NULL, n.po
 
 #' @rdname chart.EF.Weights
 #' @method chart.EF.Weights optimize.portfolio
-#' @S3method chart.EF.Weights optimize.portfolio
+#' @export
 chart.EF.Weights.optimize.portfolio <- function(object, ..., colorset=NULL, n.portfolios=25, by.groups=FALSE, match.col="ES", main="", cex.lab=0.8, cex.axis=0.8, cex.legend=0.8, legend.labels=NULL, element.color="darkgray", legend.loc="topright"){
   # chart the weights along the efficient frontier of an objected created by optimize.portfolio
   
@@ -436,7 +548,7 @@ chart.EF.Weights.optimize.portfolio <- function(object, ..., colorset=NULL, n.po
 
 #' @rdname chart.EfficientFrontier
 #' @method chart.EfficientFrontier efficient.frontier
-#' @S3method chart.EfficientFrontier efficient.frontier
+#' @export
 chart.EfficientFrontier.efficient.frontier <- function(object, ..., match.col="ES", n.portfolios=NULL, xlim=NULL, ylim=NULL, cex.axis=0.8, element.color="darkgray", main="Efficient Frontier", RAR.text="SR", rf=0, tangent.line=TRUE, cex.legend=0.8, chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8){
   if(!inherits(object, "efficient.frontier")) stop("object must be of class 'efficient.frontier'")
   
@@ -626,10 +738,121 @@ chart.EfficientFrontierOverlay <- function(R, portfolio_list, type, n.portfolios
 }
 
 
+#' Overlay the efficient frontiers of different minRisk portfolio objects on a single plot.
+#' 
+#' @param R an xts object of asset returns
+#' @param portfolio same constrained portfolio created by \code{\link{portfolio.spec}}
+#' @param risk_type type of risk that you want to compare
+#' @param n.portfolios number of portfolios to extract along the efficient frontier.
+#' This is only used for objects of class \code{optimize.portfolio}
+#' @param match.col string name of column to use for portfolio object.
+#' Must match the name of an objective.
+#' @param guideline show the risk difference and mean difference between efficient frontiers
+#' @param plot_type define the plot_type, default is "l"
+#' @param main title used in the plot.
+#' @param cex.axis the magnification to be used for sizing the axis text relative to the current setting of 'cex', similar to \code{\link{plot}}.
+#' @param element.color provides the color for drawing less-important chart elements, such as the box lines, axis lines, etc.
+#' @param legend.loc location of the legend; NULL, "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
+#' @param legend.labels character vector to use for the legend labels.
+#' @param cex.legend The magnification to be used for sizing the legend relative to the current setting of 'cex', similar to \code{\link{plot}}.
+#' @param xlim set the x-axis limit, same as in \code{\link{plot}}.
+#' @param ylim set the y-axis limit, same as in \code{\link{plot}}.
+#' @param \dots passthrough parameters to \code{\link{plot}}.
+#' @param chart.assets TRUE/FALSE to include the assets.
+#' @param labels.assets TRUE/FALSE to include the asset names in the plot.
+#' @param pch.assets plotting character of the assets, same as in \code{\link{plot}}.
+#' @param cex.assets A numerical value giving the amount by which the asset points and labels should be magnified relative to the default.
+#' @param col vector of colors with length equal to the number of portfolios in \code{portfolio_list}. Add two more to customize guideline color.
+#' @param lty vector of line types with length equal to the number of portfolios in \code{portfolio_list}. Add two more to customize guideline type.
+#' @param lwd vector of line widths with length equal to the number of portfolios in \code{portfolio_list}. Add two more to customize guideline width.
+#' @author Xinran Zhao
+#' @export
+chart.EfficientFrontierCompare <- function(R, portfolio, risk_type, n.portfolios=25, match.col=c("StdDev", "ES"), guideline=NULL, main="Efficient Frontiers", plot_type = "l", cex.axis=0.5, element.color="darkgray", legend.loc=NULL, legend.labels=NULL, cex.legend=0.8, xlim=NULL, ylim=NULL, ..., chart.assets=TRUE, labels.assets=TRUE, pch.assets=21, cex.assets=0.8, col=NULL, lty=NULL, lwd=NULL){
+  # show digits
+  options(scipen = 999)
+  
+  # store in out
+  out <- create.EfficientFrontier(R=R, portfolio=portfolio, type="mean-risk", risk_type=risk_type, compare_port = match.col, n.portfolios = n.portfolios, ...)
+  n.p = dim(out$frontier)[1]
+  m.p = dim(out$frontier)[2]
+  rnames <- colnames(R)
+  
+  # set the x and y limits
+  if(is.null(xlim)){
+    xlim <- c(0, 0)
+    xlim[1] <- out$frontier[1,1] * 0.7
+    xlim[2] <- out$frontier[n.p, 1] * 1.2
+  }
+  if(is.null(ylim)){
+    ylim <- c(0, 0)
+    ylim[1] <- out$frontier[1,2] * 0.7
+    ylim[2] <- out$frontier[n.p, 2] * 1.2
+  }
+  
+  # plot the assets
+  plot(x=1, y=1, xlab=risk_type, ylab="Mean", main=main, xlim=xlim, ylim=ylim, axes=FALSE, type="n", ...)
+  axis(1, cex.axis = cex.axis, col = element.color)
+  axis(2, cex.axis = cex.axis, col = element.color)
+  box(col = element.color)
+  
+  if(is.null(guideline)) guideline <- ifelse(length(match.col) == 2, TRUE, FALSE)
+  if(guideline){
+    # set some basic plot parameters
+    if(is.null(col) | length(col) == length(match.col)) col <- c(1:length(match.col), 1, 1)
+    if(is.null(lty) | length(lty) == length(match.col)) lty <- c(1:length(match.col), 3, 3)
+    if(is.null(lwd) | length(lwd) == length(match.col)) lwd <- c(rep(1, length(match.col)), 1, 1)
+  } else {
+    if(is.null(col)) col <- 1:length(match.col)
+    if(is.null(lty)) lty <- 1:length(match.col)
+    if(is.null(lwd)) lwd <- rep(1, length(match.col))
+  }
+  
+  # get the "mean" column
+  cnames <- colnames(out$frontier)
+  mean.mtc <- pmatch("mean", cnames)
+  if(is.na(mean.mtc)) {
+    mean.mtc <- pmatch("mean.mean", cnames)
+  }
+  if(is.na(mean.mtc)) stop("could not match 'mean' with column name of extractStats output")
+  
+  for(i in 1:length(match.col)){
+    # get the match.col column
+    mtc <- pmatch(match.col[i], cnames)
+    if(is.na(mtc)) stop("could not match match.col with column name of extractStats output")
+    # Add the efficient frontier lines to the plot
+    lines(x=out$frontier[, mtc], y=out$frontier[, mean.mtc], col=col[i], lty=lty[i], lwd=lwd[i], type = plot_type, ...)
+  }
+  
+  # legend
+  if(!is.null(legend.loc)){
+    legend.loc = "bottomright"
+  }
+  if(is.null(legend.labels)){
+      legend.labels <- paste("min", match.col, "Portfolio")
+  }
+  if(guideline){
+    lines(x=c(out$frontier[1,1], out$frontier[1,m.p]), y = rep(out$frontier[1,2], 2), lty=lty[3], col=col[3], lwd=lwd[3])
+    points(x=c(out$frontier[1,1], out$frontier[1,m.p]), y = rep(out$frontier[1,2], 2), pch=pch.assets, cex=cex.assets)
+    x_diff = abs(out$frontier[,1] - out$frontier[1,m.p])
+    x_index = min(abs(out$frontier[,1] - out$frontier[1,m.p]))
+    lines(x=c(out$frontier[which(x_diff == x_index),1], out$frontier[1,m.p]), y = c(out$frontier[which(x_diff == x_index),2], out$frontier[1,2]), lty=lty[3], col=col[3], lwd=lwd[3])
+    points(x=c(out$frontier[which(x_diff == x_index),1], out$frontier[1,m.p]), y = c(out$frontier[which(x_diff == x_index),2], out$frontier[1,2]), pch=pch.assets, cex=cex.assets)
+    if(labels.assets){
+      text(out$frontier[1,1], out$frontier[1,2], labels = paste("(", round(out$frontier[1,1], 4), ",", round(out$frontier[1,2], 4), ")"), pos = 1, cex = cex.assets)
+      text(out$frontier[1,m.p], out$frontier[1,2], labels = paste("(", round(out$frontier[1,m.p], 4), ",", round(out$frontier[1,2], 4), ")"), pos = 4, cex = cex.assets)
+      text(out$frontier[which(x_diff == x_index),1], out$frontier[which(x_diff == x_index),2], labels = paste("(", round(out$frontier[which(x_diff == x_index),1], 4), ",", round(out$frontier[which(x_diff == x_index),2], 4), ")"), pos = 2, cex = cex.assets)
+    }
+    legend.labels <- append(legend.labels, paste("% Change in Risk =", round((out$frontier[1,m.p] - out$frontier[1,1]) * 100 / out$frontier[1,1], 2)))
+    legend.labels <- append(legend.labels, paste("% Change in Return =", round((out$frontier[which(x_diff == x_index),2] - out$frontier[1,2]) * 100 / out$frontier[1,2], 2)))
+  }
+  legend("bottomright", legend=legend.labels, col=col, lty=lty, lwd=lwd, cex=cex.legend, bty="n")
+  return(invisible(out))
+}
+
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2023 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt, Xinran Zhao
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

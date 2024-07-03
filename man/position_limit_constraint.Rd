@@ -2,22 +2,20 @@
 % Please edit documentation in R/constraints.R
 \name{position_limit_constraint}
 \alias{position_limit_constraint}
-\title{constructor for position_limit_constraint}
+\title{constructor for filter_constraint}
 \usage{
-position_limit_constraint(type = "position_limit", assets, max_pos = NULL,
-  max_pos_long = NULL, max_pos_short = NULL, enabled = TRUE,
-  message = FALSE, ...)
+position_limit_constraint(
+  type = "position_limit",
+  filter_name = NULL,
+  enabled = TRUE,
+  message = FALSE,
+  ...
+)
 }
 \arguments{
 \item{type}{character type of the constraint}
 
-\item{assets}{named vector of assets specifying initial weights}
-
-\item{max_pos}{maximum number of assets with non-zero weights}
-
-\item{max_pos_long}{maximum number of assets with long (i.e. buy) positions}
-
-\item{max_pos_short}{maximum number of assets with short (i.e. sell) positions}
+\item{filter_name}{either a function to apply, or a name of a function to apply}
 
 \item{enabled}{TRUE/FALSE}
 
@@ -29,9 +27,17 @@ position_limit_constraint(type = "position_limit", assets, max_pos = NULL,
 an object of class 'position_limit_constraint'
 }
 \description{
-This function is called by add.constraint when type="position_limit" is specified, \code{\link{add.constraint}}
-Allows the user to specify the maximum number of positions (i.e. number of assets with non-zero weights)
-as well as the maximum number of long and short positions.
+This function is called by add.constraint when type="filter" is specified, \code{\link{add.constraint}}
+}
+\details{
+Allows the user to specify a filter function which will take returns, weights,
+and constraints as inputs, and can return a modified weights vector as output.
+
+Fundamentally, it could be used to filter out certain assets, or to ensure 
+that they must be long or short.
+
+Typically, filter functions will be called by the random portfolio simulation
+function or via the fn_map function.
 }
 \examples{
 data(edhec)

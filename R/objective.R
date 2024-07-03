@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -195,8 +195,6 @@ add.objective_v1 <- function(constraints, type, name, arguments=NULL, enabled=TR
 #' # Index of the weights.
 #' portf.conc <- add.objective(portf, type="weight_concentration", 
 #'                             name="HHI", conc_aversion=0.01)
-#' @rdname add.objective
-#' @name add.objective
 #' @export add.objective 
 #' @export add.objective_v2
 add.objective <- add.objective_v2 <- function(portfolio, constraints=NULL, type, name, arguments=NULL, enabled=TRUE, ..., indexnum=NULL){
@@ -457,8 +455,8 @@ minmax_objective <- function(name, target=NULL, arguments=NULL, multiplier=1, en
 #' @param enabled TRUE/FALSE, default enabled=TRUE
 #' @return a list of two elements
 #' \itemize{
-#'   \item{\code{return_objective}}
-#'   \item{\code{portfolio_risk_objective}}
+#'   \item \code{return_objective}
+#'   \item \code{portfolio_risk_objective}
 #' }
 #' @author Ross Bennett
 #' @export

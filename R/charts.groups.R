@@ -3,7 +3,7 @@
 #' @param object object of class \code{optimize.portfolio}.
 #' @param \dots passthrough parameters to \code{\link{plot}}.
 #' @param grouping
-#' \itemize{
+#' \describe{
 #'   \item{groups: }{group the weights by group constraints.}
 #'   \item{category_labels: }{group the weights by category_labels in the \code{portfolio} object.}
 #' }
@@ -94,7 +94,7 @@ chart.GroupWeights <- function(object,  ..., grouping=c("groups", "category"), p
 #' @param object object of class \code{optimize.portfolio}
 #' @param ... passthrough parameters to \code{\link{plot}}
 #' @param grouping
-#' \itemize{
+#' \describe{
 #'   \item{groups: }{group the weights by group constraints}
 #'   \item{category_labels: }{group the weights by category_labels in portfolio object}
 #' }
@@ -139,7 +139,7 @@ barplotGroupWeights <- function(object,  ..., grouping=c("groups", "category"), 
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING

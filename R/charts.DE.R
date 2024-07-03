@@ -1,7 +1,7 @@
 ###############################################################################
 # R (https://r-project.org/) Numeric Methods for Optimization of Portfolios
 #
-# Copyright (c) 2004-2018 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
+# Copyright (c) 2004-2021 Brian G. Peterson, Peter Carl, Ross Bennett, Kris Boudt
 #
 # This library is distributed under the terms of the GNU Public License (GPL)
 # for full details see the file COPYING
@@ -11,7 +11,7 @@
 ###############################################################################
 
 
-chart.Weights.DE <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
+chart.Weight.DE <- function(object, ..., neighbors = NULL, main="Weights", las = 3, xlab=NULL, cex.lab = 1, element.color = "darkgray", cex.axis=0.8, colorset=NULL, legend.loc="topright", cex.legend=0.8, plot.type="line"){
   # Specific to the output of optimize.portfolio with optimize_method="DEoptim"
   if(!inherits(object, "optimize.portfolio.DEoptim")) stop("object must be of class 'optimize.portfolio.DEoptim'")
   
@@ -88,8 +88,8 @@ chart.Weights.DE <- function(object, ..., neighbors = NULL, main="Weights", las 
 
 #' @rdname chart.Weights
 #' @method chart.Weights optimize.portfolio.DEoptim
-#' @S3method chart.Weights optimize.portfolio.DEoptim
-chart.Weights.optimize.portfolio.DEoptim <- chart.Weights.DE
+#' @export
+chart.Weights.optimize.portfolio.DEoptim <- chart.Weight.DE
 
 
 chart.Scatter.DE <- function(object, ..., neighbors = NULL, return.col='mean', risk.col='ES', chart.assets=FALSE, element.color = "darkgray", cex.axis=0.8, xlim=NULL, ylim=NULL){
@@ -306,7 +306,7 @@ chart.Scatter.DE <- function(object, ..., neighbors = NULL, return.col='mean', r
 
 #' @rdname chart.RiskReward
 #' @method chart.RiskReward optimize.portfolio.DEoptim
-#' @S3method chart.RiskReward optimize.portfolio.DEoptim
+#' @export
 chart.RiskReward.optimize.portfolio.DEoptim <- chart.Scatter.DE
 
 
@@ -318,7 +318,7 @@ charts.DE <- function(DE, risk.col, return.col, chart.assets, neighbors=NULL, ma
     par(mar=c(4,4,4,2))
     chart.Scatter.DE(object=DE, risk.col=risk.col, return.col=return.col, chart.assets=chart.assets, neighbors=neighbors, main=main, xlim=xlim, ylim=ylim, ...)
     par(mar=c(2,4,0,2))
-    chart.Weights.DE(object=DE, main="", neighbors=neighbors, ...)
+    chart.Weight.DE(object=DE, main="", neighbors=neighbors, ...)
     par(op)
 }
 
@@ -358,7 +358,7 @@ charts.DE <- function(DE, risk.col, return.col, chart.assets, neighbors=NULL, ma
 #' @param cex.axis the magnification to be used for axis annotation relative to the current setting of \code{cex}.
 #' @rdname plot
 #' @method plot optimize.portfolio.DEoptim
-#' @S3method plot optimize.portfolio.DEoptim
+#' @export
 plot.optimize.portfolio.DEoptim <- function(x, ..., return.col='mean', risk.col='ES',  chart.assets=FALSE, neighbors=NULL, main='optimized portfolio plot', xlim=NULL, ylim=NULL) {
     charts.DE(DE=x, risk.col=risk.col, return.col=return.col, chart.assets=chart.assets, neighbors=neighbors, main=main, xlim=xlim, ylim=ylim, ...)
 }

@@ -1,5 +1,4 @@
 ### R code from vignette source 'risk_budget_optimization.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: risk_budget_optimization.Rnw:85-86
