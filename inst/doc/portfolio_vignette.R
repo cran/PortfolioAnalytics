@@ -1,13 +1,13 @@
 ### R code from vignette source 'portfolio_vignette.Rnw'
 
 ###################################################
-### code chunk number 1: portfolio_vignette.Rnw:56-57
+### code chunk number 1: portfolio_vignette.Rnw:59-60
 ###################################################
 library(PortfolioAnalytics)
 
 
 ###################################################
-### code chunk number 2: portfolio_vignette.Rnw:62-71
+### code chunk number 2: portfolio_vignette.Rnw:65-74
 ###################################################
 data(edhec)
 
@@ -21,7 +21,7 @@ fund.names <- colnames(returns)
 
 
 ###################################################
-### code chunk number 3: portfolio_vignette.Rnw:79-83
+### code chunk number 3: portfolio_vignette.Rnw:82-86
 ###################################################
 # Specify a portfolio object by passing a character vector for the 
 # assets argument.
@@ -30,7 +30,7 @@ print.default(pspec)
 
 
 ###################################################
-### code chunk number 4: portfolio_vignette.Rnw:92-97
+### code chunk number 4: portfolio_vignette.Rnw:95-100
 ###################################################
 # Add the full investment constraint that specifies the weights must sum to 1.
 pspec <- add.constraint(portfolio=pspec, 
@@ -40,7 +40,7 @@ pspec <- add.constraint(portfolio=pspec,
 
 
 ###################################################
-### code chunk number 5: portfolio_vignette.Rnw:106-116
+### code chunk number 5: portfolio_vignette.Rnw:109-119
 ###################################################
 # The full investment constraint can also be specified with type="full_investment"
 # pspec <- add.constraint(portfolio=pspec, type="full_investment")
@@ -55,7 +55,7 @@ pspec <- add.constraint(portfolio=pspec,
 
 
 ###################################################
-### code chunk number 6: portfolio_vignette.Rnw:121-137
+### code chunk number 6: portfolio_vignette.Rnw:124-140
 ###################################################
 # Add box constraints
 pspec <- add.constraint(portfolio=pspec,
@@ -76,7 +76,7 @@ pspec <- add.constraint(portfolio=pspec,
 
 
 ###################################################
-### code chunk number 7: portfolio_vignette.Rnw:143-149
+### code chunk number 7: portfolio_vignette.Rnw:146-152
 ###################################################
 # Add group constraints
 pspec <- add.constraint(portfolio=pspec, type="group",
@@ -87,7 +87,7 @@ pspec <- add.constraint(portfolio=pspec, type="group",
 
 
 ###################################################
-### code chunk number 8: portfolio_vignette.Rnw:155-160
+### code chunk number 8: portfolio_vignette.Rnw:158-163
 ###################################################
 # Add position limit constraint such that we have a maximum number of three assets with non-zero weights.
 pspec <- add.constraint(portfolio=pspec, type="position_limit", max_pos=3)
@@ -97,25 +97,25 @@ pspec <- add.constraint(portfolio=pspec, type="position_limit", max_pos=3)
 
 
 ###################################################
-### code chunk number 9: portfolio_vignette.Rnw:165-166
+### code chunk number 9: portfolio_vignette.Rnw:168-169
 ###################################################
 pspec <- add.constraint(portfolio=pspec, type="diversification", div_target=0.7)
 
 
 ###################################################
-### code chunk number 10: portfolio_vignette.Rnw:171-172
+### code chunk number 10: portfolio_vignette.Rnw:174-175
 ###################################################
 pspec <- add.constraint(portfolio=pspec, type="turnover", turnover_target=0.2)
 
 
 ###################################################
-### code chunk number 11: portfolio_vignette.Rnw:177-178
+### code chunk number 11: portfolio_vignette.Rnw:180-181
 ###################################################
 pspec <- add.constraint(portfolio=pspec, type="return", return_target=0.007)
 
 
 ###################################################
-### code chunk number 12: portfolio_vignette.Rnw:183-186
+### code chunk number 12: portfolio_vignette.Rnw:186-189
 ###################################################
 pspec <- add.constraint(portfolio=pspec, type="factor_exposure",
                         B=c(-0.08, 0.37, 0.79, 1.43),
@@ -123,25 +123,25 @@ pspec <- add.constraint(portfolio=pspec, type="factor_exposure",
 
 
 ###################################################
-### code chunk number 13: portfolio_vignette.Rnw:191-192
+### code chunk number 13: portfolio_vignette.Rnw:194-195
 ###################################################
 pspec <- add.constraint(portfolio=pspec, type="transaction_cost", ptc=0.01)
 
 
 ###################################################
-### code chunk number 14: portfolio_vignette.Rnw:196-197
+### code chunk number 14: portfolio_vignette.Rnw:199-200
 ###################################################
 print(pspec)
 
 
 ###################################################
-### code chunk number 15: portfolio_vignette.Rnw:201-202
+### code chunk number 15: portfolio_vignette.Rnw:204-205
 ###################################################
 summary(pspec)
 
 
 ###################################################
-### code chunk number 16: portfolio_vignette.Rnw:210-243
+### code chunk number 16: portfolio_vignette.Rnw:213-246
 ###################################################
 # full investment constraint
 weight_constr <- weight_sum_constraint(min_sum=1, max_sum=1)
@@ -179,7 +179,7 @@ ptc_constr <- transaction_cost_constraint(assets=pspec$assets, ptc=0.01)
 
 
 ###################################################
-### code chunk number 17: portfolio_vignette.Rnw:252-256
+### code chunk number 17: portfolio_vignette.Rnw:255-259
 ###################################################
 pspec <- add.objective(portfolio=pspec,
                        type='risk',
@@ -188,7 +188,7 @@ pspec <- add.objective(portfolio=pspec,
 
 
 ###################################################
-### code chunk number 18: portfolio_vignette.Rnw:261-264
+### code chunk number 18: portfolio_vignette.Rnw:264-267
 ###################################################
 pspec <- add.objective(portfolio=pspec,
                        type='return',
@@ -196,7 +196,7 @@ pspec <- add.objective(portfolio=pspec,
 
 
 ###################################################
-### code chunk number 19: portfolio_vignette.Rnw:269-275
+### code chunk number 19: portfolio_vignette.Rnw:272-278
 ###################################################
 pspec <- add.objective(portfolio=pspec, type="risk_budget", name="ETL", 
                        arguments=list(p=0.95), max_prisk=0.3)
@@ -207,14 +207,14 @@ pspec <- add.objective(portfolio=pspec, type="risk_budget", name="ETL",
 
 
 ###################################################
-### code chunk number 20: portfolio_vignette.Rnw:291-293
+### code chunk number 20: portfolio_vignette.Rnw:294-296
 ###################################################
 pspec <- add.objective(portfolio=pspec, type="weight_concentration", 
                        name="HHI", conc_aversion=0.1)
 
 
 ###################################################
-### code chunk number 21: portfolio_vignette.Rnw:297-302
+### code chunk number 21: portfolio_vignette.Rnw:300-305
 ###################################################
 pspec <- add.objective(portfolio=pspec, type="weight_concentration", 
                        name="HHI",
@@ -224,19 +224,19 @@ pspec <- add.objective(portfolio=pspec, type="weight_concentration",
 
 
 ###################################################
-### code chunk number 22: portfolio_vignette.Rnw:306-307
+### code chunk number 22: portfolio_vignette.Rnw:309-310
 ###################################################
 print(pspec)
 
 
 ###################################################
-### code chunk number 23: portfolio_vignette.Rnw:311-312
+### code chunk number 23: portfolio_vignette.Rnw:314-315
 ###################################################
 summary(pspec)
 
 
 ###################################################
-### code chunk number 24: portfolio_vignette.Rnw:330-362
+### code chunk number 24: portfolio_vignette.Rnw:333-365
 ###################################################
 R <- edhec[, 1:4]
 
@@ -273,7 +273,7 @@ legend("bottomright", legend=c("sample", "simplex", "grid"),
 
 
 ###################################################
-### code chunk number 25: portfolio_vignette.Rnw:368-378
+### code chunk number 25: portfolio_vignette.Rnw:371-381
 ###################################################
 fev <- 0:5
 par(mfrow=c(2, 3))
@@ -288,7 +288,7 @@ par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 26: portfolio_vignette.Rnw:384-400
+### code chunk number 26: portfolio_vignette.Rnw:387-403
 ###################################################
 par(mfrow=c(1, 2))
 # simplex
@@ -309,7 +309,7 @@ par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 27: portfolio_vignette.Rnw:426-441
+### code chunk number 27: portfolio_vignette.Rnw:429-444
 ###################################################
 library(DEoptim)
 library(ROI)
@@ -329,13 +329,13 @@ init <- add.constraint(portfolio=init, type="box", min=0.05, max=0.65)
 
 
 ###################################################
-### code chunk number 28: portfolio_vignette.Rnw:446-447
+### code chunk number 28: portfolio_vignette.Rnw:449-450
 ###################################################
 maxret <- add.objective(portfolio=init, type="return", name="mean")
 
 
 ###################################################
-### code chunk number 29: portfolio_vignette.Rnw:451-456
+### code chunk number 29: portfolio_vignette.Rnw:454-459
 ###################################################
 opt_maxret <- optimize.portfolio(R=R, portfolio=maxret, 
                                  optimize_method="ROI", 
@@ -345,7 +345,7 @@ print(opt_maxret)
 
 
 ###################################################
-### code chunk number 30: portfolio_vignette.Rnw:460-463
+### code chunk number 30: portfolio_vignette.Rnw:463-466
 ###################################################
 plot(opt_maxret, risk.col="StdDev", return.col="mean", 
      main="Maximum Return Optimization", chart.assets=TRUE,
@@ -353,13 +353,13 @@ plot(opt_maxret, risk.col="StdDev", return.col="mean",
 
 
 ###################################################
-### code chunk number 31: portfolio_vignette.Rnw:468-469
+### code chunk number 31: portfolio_vignette.Rnw:471-472
 ###################################################
 minvar <- add.objective(portfolio=init, type="risk", name="var")
 
 
 ###################################################
-### code chunk number 32: portfolio_vignette.Rnw:473-476
+### code chunk number 32: portfolio_vignette.Rnw:476-479
 ###################################################
 opt_minvar <- optimize.portfolio(R=R, portfolio=minvar, 
                                  optimize_method="ROI", trace=TRUE)
@@ -367,7 +367,7 @@ print(opt_minvar)
 
 
 ###################################################
-### code chunk number 33: portfolio_vignette.Rnw:480-483
+### code chunk number 33: portfolio_vignette.Rnw:483-486
 ###################################################
 plot(opt_minvar, risk.col="StdDev", return.col="mean", 
      main="Minimum Variance Optimization", chart.assets=TRUE,
@@ -375,14 +375,14 @@ plot(opt_minvar, risk.col="StdDev", return.col="mean",
 
 
 ###################################################
-### code chunk number 34: portfolio_vignette.Rnw:488-490
+### code chunk number 34: portfolio_vignette.Rnw:491-493
 ###################################################
 qu <- add.objective(portfolio=init, type="return", name="mean")
 qu <- add.objective(portfolio=qu, type="risk", name="var", risk_aversion=0.25)
 
 
 ###################################################
-### code chunk number 35: portfolio_vignette.Rnw:494-498
+### code chunk number 35: portfolio_vignette.Rnw:497-501
 ###################################################
 opt_qu <- optimize.portfolio(R=R, portfolio=qu, 
                              optimize_method="ROI", 
@@ -391,7 +391,7 @@ print(opt_qu)
 
 
 ###################################################
-### code chunk number 36: portfolio_vignette.Rnw:501-504
+### code chunk number 36: portfolio_vignette.Rnw:504-507
 ###################################################
 plot(opt_qu, risk.col="StdDev", return.col="mean", 
      main="Quadratic Utility Optimization", chart.assets=TRUE,
@@ -399,13 +399,13 @@ plot(opt_qu, risk.col="StdDev", return.col="mean",
 
 
 ###################################################
-### code chunk number 37: portfolio_vignette.Rnw:509-510
+### code chunk number 37: portfolio_vignette.Rnw:512-513
 ###################################################
 etl <- add.objective(portfolio=init, type="risk", name="ETL")
 
 
 ###################################################
-### code chunk number 38: portfolio_vignette.Rnw:514-518
+### code chunk number 38: portfolio_vignette.Rnw:517-521
 ###################################################
 opt_etl <- optimize.portfolio(R=R, portfolio=etl, 
                               optimize_method="ROI", 
@@ -414,7 +414,7 @@ print(opt_etl)
 
 
 ###################################################
-### code chunk number 39: portfolio_vignette.Rnw:521-524
+### code chunk number 39: portfolio_vignette.Rnw:524-527
 ###################################################
 plot(opt_etl, risk.col="ES", return.col="mean", 
      main="ETL Optimization", chart.assets=TRUE,
@@ -422,7 +422,7 @@ plot(opt_etl, risk.col="ES", return.col="mean",
 
 
 ###################################################
-### code chunk number 40: portfolio_vignette.Rnw:529-532
+### code chunk number 40: portfolio_vignette.Rnw:532-535
 ###################################################
 meanETL <- add.objective(portfolio=init, type="return", name="mean")
 meanETL <- add.objective(portfolio=meanETL, type="risk", name="ETL",
@@ -430,7 +430,7 @@ meanETL <- add.objective(portfolio=meanETL, type="risk", name="ETL",
 
 
 ###################################################
-### code chunk number 41: portfolio_vignette.Rnw:536-540
+### code chunk number 41: portfolio_vignette.Rnw:539-543
 ###################################################
 opt_meanETL <- optimize.portfolio(R=R, portfolio=meanETL, 
                                   optimize_method="random",
@@ -439,7 +439,7 @@ print(opt_meanETL)
 
 
 ###################################################
-### code chunk number 42: portfolio_vignette.Rnw:544-547
+### code chunk number 42: portfolio_vignette.Rnw:547-550
 ###################################################
 stats_meanETL <- extractStats(opt_meanETL)
 dim(stats_meanETL)
@@ -447,14 +447,14 @@ head(stats_meanETL)
 
 
 ###################################################
-### code chunk number 43: portfolio_vignette.Rnw:551-553
+### code chunk number 43: portfolio_vignette.Rnw:554-556
 ###################################################
 plot(opt_meanETL, risk.col="ETL", return.col="mean", 
      main="mean-ETL Optimization", neighbors=25)
 
 
 ###################################################
-### code chunk number 44: portfolio_vignette.Rnw:557-560
+### code chunk number 44: portfolio_vignette.Rnw:560-563
 ###################################################
 pct_contrib <- ES(R=R, p=0.95, portfolio_method="component", 
                   weights=extractWeights(opt_meanETL))
@@ -462,7 +462,7 @@ barplot(pct_contrib$pct_contrib_MES, cex.names=0.8, las=3, col="lightblue")
 
 
 ###################################################
-### code chunk number 45: portfolio_vignette.Rnw:567-576
+### code chunk number 45: portfolio_vignette.Rnw:570-579
 ###################################################
 # change the box constraints to long only
 init$constraints[[2]]$min <- rep(0, 6)
@@ -476,7 +476,7 @@ rb_meanETL <- add.objective(portfolio=rb_meanETL, type="risk_budget",
 
 
 ###################################################
-### code chunk number 46: portfolio_vignette.Rnw:580-585
+### code chunk number 46: portfolio_vignette.Rnw:583-588
 ###################################################
 opt_rb_meanETL <- optimize.portfolio(R=R, portfolio=rb_meanETL, 
                                      optimize_method="DEoptim", 
@@ -486,7 +486,7 @@ print(opt_rb_meanETL)
 
 
 ###################################################
-### code chunk number 47: portfolio_vignette.Rnw:588-591
+### code chunk number 47: portfolio_vignette.Rnw:591-594
 ###################################################
 plot(opt_rb_meanETL, risk.col="ETL", return.col="mean", 
      main="Risk Budget mean-ETL Optimization",
@@ -494,14 +494,14 @@ plot(opt_rb_meanETL, risk.col="ETL", return.col="mean",
 
 
 ###################################################
-### code chunk number 48: portfolio_vignette.Rnw:595-597
+### code chunk number 48: portfolio_vignette.Rnw:598-600
 ###################################################
 plot.new()
 chart.RiskBudget(opt_rb_meanETL, risk.type="percentage", neighbors=25)
 
 
 ###################################################
-### code chunk number 49: portfolio_vignette.Rnw:603-609
+### code chunk number 49: portfolio_vignette.Rnw:606-612
 ###################################################
 eq_meanETL <- add.objective(portfolio=init, type="return", name="mean")
 eq_meanETL <- add.objective(portfolio=eq_meanETL, type="risk", name="ETL",
@@ -512,7 +512,7 @@ eq_meanETL <- add.objective(portfolio=eq_meanETL, type="risk_budget",
 
 
 ###################################################
-### code chunk number 50: portfolio_vignette.Rnw:613-618
+### code chunk number 50: portfolio_vignette.Rnw:616-621
 ###################################################
 opt_eq_meanETL <- optimize.portfolio(R=R, portfolio=eq_meanETL, 
                                      optimize_method="DEoptim", 
@@ -522,7 +522,7 @@ print(opt_eq_meanETL)
 
 
 ###################################################
-### code chunk number 51: portfolio_vignette.Rnw:622-626
+### code chunk number 51: portfolio_vignette.Rnw:625-629
 ###################################################
 plot.new()
 plot(opt_eq_meanETL, risk.col="ETL", return.col="mean", 
@@ -531,14 +531,14 @@ plot(opt_eq_meanETL, risk.col="ETL", return.col="mean",
 
 
 ###################################################
-### code chunk number 52: portfolio_vignette.Rnw:630-632
+### code chunk number 52: portfolio_vignette.Rnw:633-635
 ###################################################
 plot.new()
 chart.RiskBudget(opt_eq_meanETL, risk.type="percentage", neighbors=25)
 
 
 ###################################################
-### code chunk number 53: portfolio_vignette.Rnw:644-651
+### code chunk number 53: portfolio_vignette.Rnw:647-654
 ###################################################
 opt_combine <- combine.optimizations(list(meanETL=opt_meanETL,
                                           rbmeanETL=opt_rb_meanETL,
@@ -550,13 +550,13 @@ obj_combine <- extractObjectiveMeasures(opt_combine)
 
 
 ###################################################
-### code chunk number 54: portfolio_vignette.Rnw:654-655
+### code chunk number 54: portfolio_vignette.Rnw:657-658
 ###################################################
 chart.Weights(opt_combine, plot.type="bar", legend.loc="topleft", ylim=c(0, 1))
 
 
 ###################################################
-### code chunk number 55: portfolio_vignette.Rnw:659-663
+### code chunk number 55: portfolio_vignette.Rnw:662-666
 ###################################################
 plot.new()
 chart.RiskReward(opt_combine, risk.col="ETL", return.col="mean", 
@@ -565,7 +565,7 @@ chart.RiskReward(opt_combine, risk.col="ETL", return.col="mean",
 
 
 ###################################################
-### code chunk number 56: portfolio_vignette.Rnw:667-670
+### code chunk number 56: portfolio_vignette.Rnw:670-673
 ###################################################
 STARR <- obj_combine[, "mean"] / obj_combine[, "ETL"]
 barplot(STARR, col="blue", cex.names=0.8, cex.axis=0.8,
@@ -573,7 +573,7 @@ barplot(STARR, col="blue", cex.names=0.8, cex.axis=0.8,
 
 
 ###################################################
-### code chunk number 57: portfolio_vignette.Rnw:673-676
+### code chunk number 57: portfolio_vignette.Rnw:676-679
 ###################################################
 plot.new()
 chart.RiskBudget(opt_combine, match.col="ETL", risk.type="percent", 

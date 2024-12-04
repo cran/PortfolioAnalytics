@@ -113,9 +113,9 @@ chart.EfficientFrontier.optimize.portfolio.CVXR <- function(object, ..., optimiz
     frontier <- meanetl.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
     rar <- "STARR"
   }
-  if(match.col =="EQS"){
-    frontier <- meaneqs.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
-    rar <- "EQSratio"
+  if(match.col =="CSM"){
+    frontier <- meancsm.efficient.frontier(portfolio=portf, R=R, n.portfolios=n.portfolios, ...=...)
+    rar <- "CSMratio"
   }
   
   # data points to plot the frontier
@@ -835,15 +835,15 @@ chart.EfficientFrontierCompare <- function(R, portfolio, risk_type, n.portfolios
     points(x=c(out$frontier[1,1], out$frontier[1,m.p]), y = rep(out$frontier[1,2], 2), pch=pch.assets, cex=cex.assets)
     x_diff = abs(out$frontier[,1] - out$frontier[1,m.p])
     x_index = min(abs(out$frontier[,1] - out$frontier[1,m.p]))
-    lines(x=c(out$frontier[which(x_diff == x_index),1], out$frontier[1,m.p]), y = c(out$frontier[which(x_diff == x_index),2], out$frontier[1,2]), lty=lty[3], col=col[3], lwd=lwd[3])
+    lines(x=c(out$frontier[which(x_diff == x_index),1], out$frontier[1,m.p]), y = c(out$frontier[which(x_diff == x_index),2], out$frontier[1,2]), lty=lty[4], col=col[4], lwd=lwd[4])
     points(x=c(out$frontier[which(x_diff == x_index),1], out$frontier[1,m.p]), y = c(out$frontier[which(x_diff == x_index),2], out$frontier[1,2]), pch=pch.assets, cex=cex.assets)
     if(labels.assets){
       text(out$frontier[1,1], out$frontier[1,2], labels = paste("(", round(out$frontier[1,1], 4), ",", round(out$frontier[1,2], 4), ")"), pos = 1, cex = cex.assets)
       text(out$frontier[1,m.p], out$frontier[1,2], labels = paste("(", round(out$frontier[1,m.p], 4), ",", round(out$frontier[1,2], 4), ")"), pos = 4, cex = cex.assets)
       text(out$frontier[which(x_diff == x_index),1], out$frontier[which(x_diff == x_index),2], labels = paste("(", round(out$frontier[which(x_diff == x_index),1], 4), ",", round(out$frontier[which(x_diff == x_index),2], 4), ")"), pos = 2, cex = cex.assets)
     }
-    legend.labels <- append(legend.labels, paste("% Change in Risk =", round((out$frontier[1,m.p] - out$frontier[1,1]) * 100 / out$frontier[1,1], 2)))
-    legend.labels <- append(legend.labels, paste("% Change in Return =", round((out$frontier[which(x_diff == x_index),2] - out$frontier[1,2]) * 100 / out$frontier[1,2], 2)))
+    legend.labels <- append(legend.labels, paste("% Decrease in Risk =", round((out$frontier[1,m.p] - out$frontier[1,1]) * 100 / out$frontier[1,1], 2)))
+    legend.labels <- append(legend.labels, paste("% Increase in Return =", round((out$frontier[which(x_diff == x_index),2] - out$frontier[1,2]) * 100 / out$frontier[1,2], 2)))
   }
   legend("bottomright", legend=legend.labels, col=col, lty=lty, lwd=lwd, cex=cex.legend, bty="n")
   return(invisible(out))

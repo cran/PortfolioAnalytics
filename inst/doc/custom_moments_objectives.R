@@ -1,14 +1,14 @@
 ### R code from vignette source 'custom_moments_objectives.Rnw'
 
 ###################################################
-### code chunk number 1: custom_moments_objectives.Rnw:57-59
+### code chunk number 1: custom_moments_objectives.Rnw:59-61
 ###################################################
 library(PortfolioAnalytics)
 library(DEoptim)
 
 
 ###################################################
-### code chunk number 2: custom_moments_objectives.Rnw:64-73
+### code chunk number 2: custom_moments_objectives.Rnw:66-75
 ###################################################
 data(edhec)
 
@@ -22,7 +22,7 @@ funds <- colnames(R)
 
 
 ###################################################
-### code chunk number 3: custom_moments_objectives.Rnw:79-89
+### code chunk number 3: custom_moments_objectives.Rnw:81-91
 ###################################################
 # Construct initial portfolio with basic constraints.
 init.portf <- portfolio.spec(assets=funds)
@@ -37,7 +37,7 @@ ES.portf <- add.objective(portfolio=init.portf, type="risk", name="ES")
 
 
 ###################################################
-### code chunk number 4: custom_moments_objectives.Rnw:93-98
+### code chunk number 4: custom_moments_objectives.Rnw:95-100
 ###################################################
 sd.moments <- set.portfolio.moments(R, SD.portf)
 names(sd.moments)
@@ -47,7 +47,7 @@ names(es.moments)
 
 
 ###################################################
-### code chunk number 5: custom_moments_objectives.Rnw:115-122
+### code chunk number 5: custom_moments_objectives.Rnw:117-124
 ###################################################
 sigma.robust <- function(R){
   require(MASS)
@@ -59,7 +59,7 @@ sigma.robust <- function(R){
 
 
 ###################################################
-### code chunk number 6: custom_moments_objectives.Rnw:126-130
+### code chunk number 6: custom_moments_objectives.Rnw:128-132
 ###################################################
 opt.sd <- optimize.portfolio(R, SD.portf, 
                              optimize_method="ROI", 
@@ -68,7 +68,7 @@ opt.sd
 
 
 ###################################################
-### code chunk number 7: custom_moments_objectives.Rnw:134-139
+### code chunk number 7: custom_moments_objectives.Rnw:136-141
 ###################################################
 weights <- extractWeights(opt.sd)
 sigma <- sigma.robust(R)$sigma
@@ -78,7 +78,7 @@ extractObjectiveMeasures(opt.sd)$StdDev
 
 
 ###################################################
-### code chunk number 8: custom_moments_objectives.Rnw:146-151
+### code chunk number 8: custom_moments_objectives.Rnw:148-153
 ###################################################
 pasd <- function(R, weights, sigma, N=36){
   R <- tail(R, N)
@@ -88,7 +88,7 @@ pasd <- function(R, weights, sigma, N=36){
 
 
 ###################################################
-### code chunk number 9: custom_moments_objectives.Rnw:169-178
+### code chunk number 9: custom_moments_objectives.Rnw:171-180
 ###################################################
 # Construct initial portfolio with basic constraints.
 pasd.portf <- portfolio.spec(assets=funds)
@@ -102,7 +102,7 @@ pasd.portf <- add.objective(portfolio=pasd.portf, type="risk", name="pasd",
 
 
 ###################################################
-### code chunk number 10: custom_moments_objectives.Rnw:183-188
+### code chunk number 10: custom_moments_objectives.Rnw:185-190
 ###################################################
 opt.pasd <- optimize.portfolio(R, pasd.portf, 
                                optimize_method="DEoptim", 
@@ -112,7 +112,7 @@ opt.pasd
 
 
 ###################################################
-### code chunk number 11: custom_moments_objectives.Rnw:201-212
+### code chunk number 11: custom_moments_objectives.Rnw:203-214
 ###################################################
 CRRA <- function(R, weights, lambda, sigma, m3, m4){
   weights <- matrix(weights, ncol=1)
@@ -128,7 +128,7 @@ CRRA <- function(R, weights, lambda, sigma, m3, m4){
 
 
 ###################################################
-### code chunk number 12: custom_moments_objectives.Rnw:216-223
+### code chunk number 12: custom_moments_objectives.Rnw:218-225
 ###################################################
 crra.moments <- function(R, ...){
   out <- list()
@@ -140,7 +140,7 @@ crra.moments <- function(R, ...){
 
 
 ###################################################
-### code chunk number 13: custom_moments_objectives.Rnw:227-238
+### code chunk number 13: custom_moments_objectives.Rnw:229-240
 ###################################################
 # Construct initial portfolio with basic constraints.
 crra.portf <- portfolio.spec(assets=funds)
@@ -156,7 +156,7 @@ crra.portf <- add.objective(portfolio=crra.portf, type="return", name="CRRA",
 
 
 ###################################################
-### code chunk number 14: custom_moments_objectives.Rnw:241-245
+### code chunk number 14: custom_moments_objectives.Rnw:243-247
 ###################################################
 opt.crra <- optimize.portfolio(R, crra.portf, optimize_method="DEoptim",
                                  search_size=5000, trace=TRUE, traceDE=0,

@@ -9,14 +9,14 @@ Authors@R: c(
     email="peter@braverock.com") ,
     person(given="Ross",family="Bennett",role=c("ctb","cph")) ,
     person(given="Kris",family="Boudt",role=c("ctb","cph")) ,
-    person(given="Xinran",family="Zhao",role="ctb") ,
+    person(given="Xinran",family="Zhao",role="cph") ,
     person(given="R. Douglas",family="Martin",role="ctb") ,
     person(given="Guy",family="Yollin",role="ctb") ,
     person(given="Hezky",family="Varon",role="ctb") ,
     person(given="Xiaokang",family="Feng",role="ctb") ,
     person(given="Yifu",family="Kang",role="ctb") )
-Version: 2.0.0
-Date: 2024-07-03
+Version: 2.1.0
+Date: 2024-12-04
 Maintainer: Brian G. Peterson <brian@braverock.com>
 Description: Portfolio optimization and analysis routines and graphics.
 Depends: R (>= 4.0.0), zoo, xts (>= 0.10-1), foreach,
@@ -34,16 +34,16 @@ Copyright: (c) 2004-2024
 RoxygenNote: 7.3.2
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-07-03 18:05:30 UTC; brian
+Packaged: 2024-12-04 15:50:35 UTC; brian
 Author: Brian G. Peterson [cre, aut, cph],
   Peter Carl [aut, cph],
   Ross Bennett [ctb, cph],
   Kris Boudt [ctb, cph],
-  Xinran Zhao [ctb],
+  Xinran Zhao [cph],
   R. Douglas Martin [ctb],
   Guy Yollin [ctb],
   Hezky Varon [ctb],
   Xiaokang Feng [ctb],
   Yifu Kang [ctb]
 Repository: CRAN
-Date/Publication: 2024-07-03 18:50:07 UTC
+Date/Publication: 2024-12-04 16:30:01 UTC

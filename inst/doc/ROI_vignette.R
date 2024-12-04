@@ -1,7 +1,7 @@
 ### R code from vignette source 'ROI_vignette.Rnw'
 
 ###################################################
-### code chunk number 1: ROI_vignette.Rnw:26-32
+### code chunk number 1: ROI_vignette.Rnw:28-34
 ###################################################
 suppressMessages(library(PortfolioAnalytics))
 suppressMessages(library(foreach))
@@ -12,7 +12,7 @@ suppressMessages(library(ROI.plugin.glpk))
 
 
 ###################################################
-### code chunk number 2: ROI_vignette.Rnw:37-46
+### code chunk number 2: ROI_vignette.Rnw:39-48
 ###################################################
 data(edhec)
 
@@ -26,7 +26,7 @@ funds <- colnames(returns)
 
 
 ###################################################
-### code chunk number 3: ROI_vignette.Rnw:64-75
+### code chunk number 3: ROI_vignette.Rnw:66-77
 ###################################################
 # Create portfolio object
 portf_maxret <- portfolio.spec(assets=funds)
@@ -42,14 +42,14 @@ portf_maxret <- add.objective(portfolio=portf_maxret, type="return", name="mean"
 
 
 ###################################################
-### code chunk number 4: ROI_vignette.Rnw:79-81
+### code chunk number 4: ROI_vignette.Rnw:81-83
 ###################################################
 print(portf_maxret)
 summary(portf_maxret)
 
 
 ###################################################
-### code chunk number 5: ROI_vignette.Rnw:86-89
+### code chunk number 5: ROI_vignette.Rnw:88-91
 ###################################################
 # Run the optimization
 opt_maxret <- optimize.portfolio(R=returns, portfolio=portf_maxret, 
@@ -57,50 +57,50 @@ opt_maxret <- optimize.portfolio(R=returns, portfolio=portf_maxret,
 
 
 ###################################################
-### code chunk number 6: ROI_vignette.Rnw:93-94
+### code chunk number 6: ROI_vignette.Rnw:95-96
 ###################################################
 print(opt_maxret)
 
 
 ###################################################
-### code chunk number 7: ROI_vignette.Rnw:98-99
+### code chunk number 7: ROI_vignette.Rnw:100-101
 ###################################################
 summary(opt_maxret)
 
 
 ###################################################
-### code chunk number 8: ROI_vignette.Rnw:104-105
+### code chunk number 8: ROI_vignette.Rnw:106-107
 ###################################################
 names(opt_maxret)
 
 
 ###################################################
-### code chunk number 9: ROI_vignette.Rnw:109-110
+### code chunk number 9: ROI_vignette.Rnw:111-112
 ###################################################
 extractStats(opt_maxret)
 
 
 ###################################################
-### code chunk number 10: ROI_vignette.Rnw:114-115
+### code chunk number 10: ROI_vignette.Rnw:116-117
 ###################################################
 extractWeights(opt_maxret)
 
 
 ###################################################
-### code chunk number 11: ROI_vignette.Rnw:120-121
+### code chunk number 11: ROI_vignette.Rnw:122-123
 ###################################################
 plot(opt_maxret, chart.assets=TRUE, xlim=c(0.02, 0.18))
 
 
 ###################################################
-### code chunk number 12: ROI_vignette.Rnw:127-129
+### code chunk number 12: ROI_vignette.Rnw:129-131
 ###################################################
 chart.RiskReward(opt_maxret,return.col="mean", risk.col="sd", 
                  chart.assets=TRUE, xlim=c(0.01, 0.05), main="Maximum Return")
 
 
 ###################################################
-### code chunk number 13: ROI_vignette.Rnw:134-138
+### code chunk number 13: ROI_vignette.Rnw:136-140
 ###################################################
 bt_maxret <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_maxret,
                                             optimize_method="ROI", 
@@ -109,7 +109,7 @@ bt_maxret <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_maxret,
 
 
 ###################################################
-### code chunk number 14: ROI_vignette.Rnw:156-164
+### code chunk number 14: ROI_vignette.Rnw:158-166
 ###################################################
 # Create portfolio object
 portf_minvar <- portfolio.spec(assets=funds)
@@ -122,7 +122,7 @@ portf_minvar <- add.objective(portfolio=portf_minvar, type="risk", name="var")
 
 
 ###################################################
-### code chunk number 15: ROI_vignette.Rnw:170-174
+### code chunk number 15: ROI_vignette.Rnw:172-176
 ###################################################
 # Run the optimization
 opt_gmv <- optimize.portfolio(R=returns, portfolio=portf_minvar, 
@@ -131,7 +131,7 @@ print(opt_gmv)
 
 
 ###################################################
-### code chunk number 16: ROI_vignette.Rnw:178-182
+### code chunk number 16: ROI_vignette.Rnw:180-184
 ###################################################
 bt_gmv <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_minvar,
                                          optimize_method="ROI", 
@@ -140,7 +140,7 @@ bt_gmv <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_minvar,
 
 
 ###################################################
-### code chunk number 17: ROI_vignette.Rnw:190-202
+### code chunk number 17: ROI_vignette.Rnw:192-204
 ###################################################
 # Add long only constraints
 portf_minvar <- add.constraint(portfolio=portf_minvar, type="box", 
@@ -157,7 +157,7 @@ portf_minvar <- add.constraint(portfolio=portf_minvar,
 
 
 ###################################################
-### code chunk number 18: ROI_vignette.Rnw:206-210
+### code chunk number 18: ROI_vignette.Rnw:208-212
 ###################################################
 # Run the optimization
 opt_minvar <- optimize.portfolio(R=returns, portfolio=portf_minvar, 
@@ -166,7 +166,7 @@ print(opt_minvar)
 
 
 ###################################################
-### code chunk number 19: ROI_vignette.Rnw:214-218
+### code chunk number 19: ROI_vignette.Rnw:216-220
 ###################################################
 bt_minvar <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_minvar,
                                             optimize_method="ROI", 
@@ -175,7 +175,7 @@ bt_minvar <- optimize.portfolio.rebalancing(R=returns, portfolio=portf_minvar,
 
 
 ###################################################
-### code chunk number 20: ROI_vignette.Rnw:234-255
+### code chunk number 20: ROI_vignette.Rnw:236-257
 ###################################################
 # Create initial portfolio object
 init_portf <- portfolio.spec(assets=funds)
@@ -201,7 +201,7 @@ qu_obj <- list(ret_obj, var_obj)
 
 
 ###################################################
-### code chunk number 21: ROI_vignette.Rnw:260-266
+### code chunk number 21: ROI_vignette.Rnw:262-268
 ###################################################
 # Run the optimization
 opt_qu <- optimize.portfolio(R=returns, portfolio=init_portf, 
@@ -212,7 +212,7 @@ opt_qu <- optimize.portfolio(R=returns, portfolio=init_portf,
 
 
 ###################################################
-### code chunk number 22: ROI_vignette.Rnw:270-276
+### code chunk number 22: ROI_vignette.Rnw:272-278
 ###################################################
 bt_qu <- optimize.portfolio.rebalancing(R=returns, portfolio=init_portf,
                                         constraints=qu_constr, 
