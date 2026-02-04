@@ -82,7 +82,7 @@ extract.efficient.frontier <- function (object=NULL, match.col='ES', from=NULL, 
 #' 
 #' @param portfolio a portfolio object with constraints created via \code{\link{portfolio.spec}}
 #' @param R an xts or matrix of asset returns
-#' @param optimize_method the optimize method to get the efficient frontier, default is ROI
+#' @param optimize_method the optimize method to get the efficient frontier, default is CVXR
 #' @param n.portfolios number of portfolios to plot along the efficient frontier
 #' @param risk_aversion vector of risk_aversion values to construct the efficient frontier.
 #' \code{n.portfolios} is ignored if \code{risk_aversion} is specified and the number
@@ -91,7 +91,7 @@ extract.efficient.frontier <- function (object=NULL, match.col='ES', from=NULL, 
 #' @return a matrix of objective measure values and weights along the efficient frontier
 #' @author Ross Bennett
 #' @export
-meanvar.efficient.frontier <- function(portfolio, R, optimize_method='ROI', n.portfolios=25, risk_aversion=NULL, ...){
+meanvar.efficient.frontier <- function(portfolio, R, optimize_method='CVXR', n.portfolios=25, risk_aversion=NULL, ...){
   if(!is.portfolio(portfolio)) stop("portfolio object must be of class 'portfolio'")
   # step 1: find the minimum return given the constraints
   # step 2: find the maximum return given the constraints
@@ -146,7 +146,7 @@ meanvar.efficient.frontier <- function(portfolio, R, optimize_method='ROI', n.po
   # run the optimization to get the maximum return
   tmp <- optimize.portfolio(R=R, portfolio=portfolio, optimize_method=optimize_method, ...=...)
   mean_ret <- colMeans(R)
-  maxret <- sum(extractWeights(tmp) * mean_ret)
+  maxret <- extract_risk(R, tmp$weights)$mean
   
   ##### Get the return at the minimum variance portfolio #####
   
@@ -162,7 +162,7 @@ meanvar.efficient.frontier <- function(portfolio, R, optimize_method='ROI', n.po
   # Do we want to disable the turnover or transaction costs constraints here?
   tmp <- optimize.portfolio(R=R, portfolio=portfolio, optimize_method=optimize_method, ...=...)
   stats <- extractStats(tmp)
-  minret <- sum(extractWeights(tmp) * mean_ret)
+  minret <- extract_risk(R, tmp$weights)$mean
   
   # length.out is the number of portfolios to create
   ret_seq <- seq(from=minret, to=maxret, length.out=n.portfolios)
@@ -208,13 +208,13 @@ meanvar.efficient.frontier <- function(portfolio, R, optimize_method='ROI', n.po
 #' 
 #' @param portfolio a portfolio object with constraints and objectives created via \code{\link{portfolio.spec}}
 #' @param R an xts or matrix of asset returns
-#' @param optimize_method the optimize method to get the efficient frontier, default is ROI
+#' @param optimize_method the optimize method to get the efficient frontier, default is CVXR
 #' @param n.portfolios number of portfolios to generate the efficient frontier
 #' @param \dots passthru parameters to \code{\link{optimize.portfolio}}
 #' @return a matrix of objective measure values and weights along the efficient frontier
 #' @author Ross Bennett
 #' @export
-meanetl.efficient.frontier <- meanes.efficient.frontier <- function(portfolio, R, optimize_method='ROI', n.portfolios=25, ...){
+meanetl.efficient.frontier <- meanes.efficient.frontier <- function(portfolio, R, optimize_method='CVXR', n.portfolios=25, ...){
   if(!is.portfolio(portfolio)) stop("portfolio object must be of class 'portfolio'")
   # step 1: find the minimum return given the constraints
   # step 2: find the maximum return given the constraints
@@ -271,7 +271,7 @@ meanetl.efficient.frontier <- meanes.efficient.frontier <- function(portfolio, R
   #   out <- matrix(0, nrow=length(ret_seq), ncol=length(extractStats(tmp)))
   #   for(i in 1:length(ret_seq)){
   #     portfolio$objectives[[mean_idx]]$target <- ret_seq[i]
-  #     out[i, ] <- extractStats(optimize.portfolio(R=R, portfolio=portfolio, optimize_method="ROI"))
+  #     out[i, ] <- extractStats(optimize.portfolio(R=R, portfolio=portfolio, optimize_method="CVXR"))
   #   }
   stopifnot("package:foreach" %in% search() || requireNamespace("foreach",quietly = TRUE))
   stopifnot("package:iterators" %in% search() || requireNamespace("iterators",quietly = TRUE))

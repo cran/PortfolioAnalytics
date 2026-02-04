@@ -759,6 +759,8 @@ get_constraints <- function(portfolio){
       }
       if(inherits(constraint, "turnover_constraint")){
         out$turnover_target <- constraint$turnover_target
+        out$turnover_penalty <- constraint$turnover_penalty
+        out$weight_initial <- constraint$weight_initial
       }
       if(inherits(constraint, "diversification_constraint")){
         out$div_target <- constraint$div_target
@@ -822,6 +824,8 @@ get_constraints <- function(portfolio){
 #' 
 #' @param type character type of the constraint
 #' @param turnover_target target turnover value
+#' @param turnover_penalty optional penalty parameter for turnover constraint
+#' @param weight_initial optional initial weights vector to compute turnover from
 #' @param enabled TRUE/FALSE
 #' @param message TRUE/FALSE. The default is message=FALSE. Display messages if TRUE.
 #' @param \dots any other passthru parameters to specify box and/or group constraints
@@ -836,9 +840,11 @@ get_constraints <- function(portfolio){
 #' 
 #' pspec <- add.constraint(portfolio=pspec, type="turnover", turnover_target=0.6)
 #' @export
-turnover_constraint <- function(type="turnover", turnover_target, enabled=TRUE, message=FALSE, ...){
+turnover_constraint <- function(type="turnover", turnover_target, turnover_penalty=NULL, weight_initial=NULL, enabled=TRUE, message=FALSE, ...){
   Constraint <- constraint_v2(type, enabled=enabled, constrclass="turnover_constraint", ...)
   Constraint$turnover_target <- turnover_target
+  Constraint$weight_initial <- weight_initial
+  Constraint$turnover_penalty <- turnover_penalty
   return(Constraint)
 }
 
@@ -1223,6 +1229,8 @@ check_constraints <- function(weights, portfolio){
   group_pos <- constraints$group_pos
   div_target <- constraints$div_target
   turnover_target <- constraints$turnover_target
+  turnover_penalty <- constraints$turnover_penalty
+  weight_initial <- constraints$weight_initial
   max_pos <- constraints$max_pos
   max_pos_long <- constraints$max_pos_long
   max_pos_short <- constraints$max_pos_short

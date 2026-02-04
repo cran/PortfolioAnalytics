@@ -661,7 +661,7 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
   portfolio=NULL,
   constraints=NULL,
   objectives=NULL,
-  optimize_method=c("DEoptim","random","ROI","pso","GenSA", "Rglpk", "osqp", "mco", "CVXR", ...),
+  optimize_method=c("DEoptim","random","ROI","pso","GenSA", "Rglpk", "osqp", "mco", "CVXR", "cvxr", ...),
   search_size=20000,
   trace=FALSE, ...,
   rp=NULL,
@@ -837,12 +837,12 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
       
       # NOTE: need to normalize in the optimization wrapper too before we return, since we've normalized in here
       # In Kris' original function, this was manifested as a full investment constraint
-      if(!is.null(constraints$max_sum) & constraints$max_sum != Inf ) {
+      if(!is.null(constraints$max_sum) & constraints$max_sum != Inf & constraints$max_sum != 0) {
         max_sum=constraints$max_sum
         if(sum(weights)>max_sum) { weights<-(max_sum/sum(weights))*weights } # normalize to max_sum
       }
       
-      if(!is.null(constraints$min_sum) & constraints$min_sum != -Inf ) {
+      if(!is.null(constraints$min_sum) & constraints$min_sum != -Inf & constraints$min_sum != 0) {
         min_sum=constraints$min_sum
         if(sum(weights)<min_sum) { weights<-(min_sum/sum(weights))*weights } # normalize to min_sum
       }
@@ -2787,10 +2787,10 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
   
   ## case if method = CVXR
   cvxr_solvers <- c("CBC", "GLPK", "GLPK_MI", "OSQP", "CPLEX", "SCS", "ECOS", "GUROBI", "MOSEK")
-  if (optimize_method == "CVXR" || optimize_method %in% cvxr_solvers) {
+  if (optimize_method == "CVXR" || optimize_method == "cvxr" || optimize_method %in% cvxr_solvers) {
     ## search for required package
     stopifnot("package:CVXR" %in% search() || requireNamespace("CVXR", quietly = TRUE))
-    if(optimize_method == "CVXR") cvxr_default=TRUE else cvxr_default=FALSE
+    if(optimize_method == "CVXR"|| optimize_method == "cvxr") cvxr_default=TRUE else cvxr_default=FALSE
     
     ## variables
     X <- as.matrix(R)
@@ -2805,6 +2805,7 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
     risk <- FALSE
     risk_ES <- FALSE
     risk_CSM <- FALSE
+    risk_HHI <- FALSE
     maxSR <- FALSE
     maxSTARR <- FALSE
     ESratio <- FALSE
@@ -2812,7 +2813,7 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
     alpha <- 0.05
     lambda <- 1
     
-    valid_objnames <- c("mean", "var", "sd", "StdDev", "ES", "CVaR", "ETL", "CSM")
+    valid_objnames <- c("mean", "var", "sd", "StdDev", "ES", "CVaR", "ETL", "CSM", "HHI", "hhi")
     for (objective in portfolio$objectives) {
       if (objective$enabled) {
         if (!(objective$name %in% valid_objnames)) {
@@ -2830,7 +2831,11 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
         reward <- ifelse(objective$name == "mean", TRUE, reward)
         risk <- ifelse(objective$name %in% valid_objnames[2:4], TRUE, risk)
         risk_ES <- ifelse(objective$name %in% valid_objnames[5:7], TRUE, risk_ES)
-        risk_CSM <- ifelse(objective$name %in% valid_objnames[8:9], TRUE, risk_CSM)
+        risk_CSM <- ifelse(objective$name %in% valid_objnames[8:8], TRUE, risk_CSM)
+        if(objective$name %in% valid_objnames[9:11]){
+          risk_HHI <- TRUE
+          lambda_hhi <- objective$conc_aversion
+        }
         arguments <- objective$arguments
       }
     }
@@ -2847,17 +2852,22 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
       return_target <- portfolio$objectives[[mean_idx]]$target
     } else return_target=NULL
     
-    if(reward & !risk & !risk_ES & !risk_CSM){
+    if(reward & !risk & !risk_ES & !risk_CSM & !risk_HHI){
       # max return
       obj <- -t(mean_value) %*% wts
       constraints_cvxr = list()
       tmpname = "mean"
-    } else if(!reward & risk & !risk_ES & !risk_CSM){
+    } else if(!reward & risk & !risk_ES & !risk_CSM & !risk_HHI){
       # min var/std
       obj <- CVXR::quad_form(wts, sigma_value)
       constraints_cvxr = list()
       tmpname = "StdDev"
-    } else if(reward & risk & !risk_ES & !risk_CSM){
+    } else if(!reward & risk & !risk_ES & !risk_CSM & risk_HHI){
+      # min HHI
+      obj <- CVXR::quad_form(wts, sigma_value) + lambda_hhi * CVXR::cvxr_norm(wts, 2) **2
+      constraints_cvxr = list()
+      tmpname = "HHI"
+    } else if(reward & risk & !risk_ES & !risk_CSM & !risk_HHI){
       # mean-var/sharpe ratio
       if(hasArg(maxSR)) maxSR=match.call(expand.dots=TRUE)$maxSR
       
@@ -2970,11 +2980,38 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
       constraints_cvxr = append(constraints_cvxr, t(mean_value) %*% wts >= return_target)
     }
     
+    ## factor exposure constraint
+    if(!is.null(constraints$B)){
+      constraints_cvxr = append(constraints_cvxr, t(constraints$B) %*% wts <= constraints$upper)
+      constraints_cvxr = append(constraints_cvxr, t(constraints$B) %*% wts >= constraints$lower)
+    }
+    
+    ## turnover constraint
+    if(!is.null(constraints$turnover_target)){
+      # set weight initial
+      if(is.null(constraints$weight_initial)){
+        weight_initial <- rep(1/N, N)
+      } else {
+        weight_initial <- constraints$weight_initial
+      }
+      # penalty for minvar
+      if(tmpname == "StdDev"){
+        if(is.null(constraints$turnover_penalty)){
+          stopifnot("package:Matrix" %in% search()  ||  requireNamespace("Matrix",quietly = TRUE))
+          sigma_value_penalty = Matrix::nearPD(sigma_value)$mat
+        } else {
+          sigma_value_penalty = sigma_value + diag(constraints$turnover_penalty, N)
+        }
+        obj <- CVXR::quad_form(wts - weight_initial, sigma_value_penalty) + 2 * t(wts - weight_initial) %*% sigma_value %*% weight_initial + t(weight_initial) %*% sigma_value %*% weight_initial
+      }
+      constraints_cvxr = append(constraints_cvxr, sum(abs(wts - weight_initial)) <= constraints$turnover_target)
+    }
+    
     # problem
     prob_cvxr <- CVXR::Problem(CVXR::Minimize(obj), constraints = constraints_cvxr)
     
     if(cvxr_default){
-      if(risk || maxSR){
+      if((risk || maxSR) && !risk_HHI){
         result_cvxr <- CVXR::solve(prob_cvxr, solver = "OSQP", ... = ...)
       } else {
         result_cvxr <- CVXR::solve(prob_cvxr, solver = "SCS", ... = ...)
@@ -2990,10 +3027,13 @@ optimize.portfolio <- optimize.portfolio_v2 <- function(
     names(cvxr_wts) <- colnames(R)
     
     obj_cvxr <- list()
-    if(reward & !risk & !risk_ES & !risk_CSM){ # max return
+    if(reward & !risk & !risk_ES & !risk_CSM & !risk_HHI){ # max return
       obj_cvxr[[tmpname]] <- -result_cvxr$value
-    } else if(!reward & risk & !risk_ES & !risk_CSM){ # min var/std
+    } else if(!reward & risk & !risk_ES & !risk_CSM & !risk_HHI){ # min var/std
       obj_cvxr[[tmpname]] <- sqrt(result_cvxr$value)
+    } else if(!reward & risk & !risk_ES & !risk_CSM & risk_HHI){ # min HHI
+      obj_cvxr[["StdDev"]] <- sqrt(t(cvxr_wts) %*% sigma_value %*% cvxr_wts)
+      obj_cvxr[[tmpname]] <- (result_cvxr$value - t(cvxr_wts) %*% sigma_value %*% cvxr_wts)/lambda_hhi
     } else if(!maxSR & !maxSTARR & !CSMratio){ # mean-var/ES/CSM
       obj_cvxr[[tmpname]] <- result_cvxr$value
       if(reward & risk){
@@ -3320,22 +3360,56 @@ optimize.portfolio.rebalancing <- function(R, portfolio=NULL, constraints=NULL, 
     training_period <- rolling_window
   
   if(is.null(training_period)) {if(nrow(R)<36) training_period=nrow(R) else training_period=36}
-  if (is.null(rolling_window)){
-    # define the index endpoints of our periods
-    ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
-    # now apply optimize.portfolio to the periods, in parallel if available
-    ep <- ep.i[1]
-    out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
-      optimize.portfolio(R[1:ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+  
+  # turnover weight_initial is previous time point optimal weight
+  turnover_idx <- which(sapply(portfolio$constraints, function(x) x$type == "turnover"))
+  if(length(turnover_idx) > 0){
+    turnover_idx <- turnover_idx[1]
+    # original weight_initial
+    if(is.null(portfolio$constraints[[turnover_idx]]$weight_initial)){
+      portfolio$constraints[[turnover_idx]]$weight_initial <- rep(1/length(portfolio$assets), length(portfolio$assets))
+    }
+    
+    # rebalancing
+    if (is.null(rolling_window)){
+      # define the index endpoints of our periods
+      ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
+      # now apply optimize.portfolio to the periods, in parallel if available
+      ep <- ep.i[1]
+      out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
+        opt <- optimize.portfolio(R[1:ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+        portfolio$constraints[[turnover_idx]]$weight_initial <- opt$weights
+        opt
+      }
+    } else {
+      # define the index endpoints of our periods
+      ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
+      # now apply optimize.portfolio to the periods, in parallel if available
+      out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
+        opt <- optimize.portfolio(R[(ifelse(ep-rolling_window>=1,ep-rolling_window,1)):ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+        portfolio$constraints[[turnover_idx]]$weight_initial <- opt$weights
+        opt
+      }
     }
   } else {
-    # define the index endpoints of our periods
-    ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
-    # now apply optimize.portfolio to the periods, in parallel if available
-    out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
-      optimize.portfolio(R[(ifelse(ep-rolling_window>=1,ep-rolling_window,1)):ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+    if (is.null(rolling_window)){
+      # define the index endpoints of our periods
+      ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
+      # now apply optimize.portfolio to the periods, in parallel if available
+      ep <- ep.i[1]
+      out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
+        optimize.portfolio(R[1:ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+      }
+    } else {
+      # define the index endpoints of our periods
+      ep.i<-endpoints(R,on=rebalance_on)[which(endpoints(R, on = rebalance_on)>=training_period)]
+      # now apply optimize.portfolio to the periods, in parallel if available
+      out_list<-foreach::foreach(ep=iterators::iter(ep.i), .errorhandling='pass', .packages='PortfolioAnalytics') %dopar% {
+        optimize.portfolio(R[(ifelse(ep-rolling_window>=1,ep-rolling_window,1)):ep,], portfolio=portfolio, optimize_method=optimize_method, search_size=search_size, trace=trace, rp=rp, parallel=FALSE, ...=...)
+      }
     }
   }
+  
   # out_list is a list where each element is an optimize.portfolio object
   # at each rebalance date
   names(out_list)<-index(R[ep.i])
