@@ -15,8 +15,8 @@ Authors@R: c(
     person(given="Hezky",family="Varon",role="ctb") ,
     person(given="Xiaokang",family="Feng",role="ctb") ,
     person(given="Yifu",family="Kang",role="ctb") )
-Version: 2.1.1
-Date: 2026-02-02
+Version: 2.1.2
+Date: 2026-04-08
 Maintainer: Brian G. Peterson <brian@braverock.com>
 Description: Portfolio optimization and analysis routines and graphics.
 Depends: R (>= 4.0.0), zoo, xts (>= 0.10-1), foreach,
@@ -35,7 +35,7 @@ Copyright: (c) 2004-2026
 RoxygenNote: 7.3.3
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2026-02-03 16:59:16 UTC; brian
+Packaged: 2026-04-09 19:08:52 UTC; brian
 Author: Brian G. Peterson [cre, aut, cph],
   Peter Carl [aut, cph],
   Ross Bennett [ctb, cph],
@@ -47,4 +47,4 @@ Author: Brian G. Peterson [cre, aut, cph],
   Xiaokang Feng [ctb],
   Yifu Kang [ctb]
 Repository: CRAN
-Date/Publication: 2026-02-04 06:40:44 UTC
+Date/Publication: 2026-04-10 05:10:17 UTC

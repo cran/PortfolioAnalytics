@@ -7,9 +7,9 @@
 centroid.buckets(buckets, simulations = 1000)
 }
 \arguments{
-\item{buckets}{a list where each element contains the index of the assets in 
-the respective bucket. The assets within each bucket have no order. 
-The bucket elements are in ascending order such that 
+\item{buckets}{a list where each element contains the index of the assets in
+the respective bucket. The assets within each bucket have no order.
+The bucket elements are in ascending order such that
 R_bucket_1 < ... < R_bucket_n}
 
 \item{simulations}{number of simulations}

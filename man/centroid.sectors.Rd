@@ -7,7 +7,7 @@
 centroid.sectors(sectors, simulations = 1000)
 }
 \arguments{
-\item{sectors}{a list where each list element contains the order of each 
+\item{sectors}{a list where each list element contains the order of each
 asset in the given sector}
 
 \item{simulations}{number of simulations}

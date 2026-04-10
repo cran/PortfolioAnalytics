@@ -9,8 +9,8 @@ ac.ranking(R, order, ...)
 \arguments{
 \item{R}{xts object of asset returns}
 
-\item{order}{a vector of indexes of the relative ranking of expected asset 
-returns in ascending order. For example, \code{order = c(2, 3, 1, 4)} means 
+\item{order}{a vector of indexes of the relative ranking of expected asset
+returns in ascending order. For example, \code{order = c(2, 3, 1, 4)} means
 that the expected returns of \code{R[,2] < R[,3], < R[,1] < R[,4]}.}
 
 \item{\dots}{any other passthrough parameters}
@@ -23,20 +23,20 @@ Compute the first moment from a single complete sort
 }
 \details{
 This function computes the estimated centroid vector from a single complete
-sort using the analytical approximation as described in R. Almgren and 
-N. Chriss, "Portfolios from Sorts". The centroid is estimated and then 
+sort using the analytical approximation as described in R. Almgren and
+N. Chriss, "Portfolios from Sorts". The centroid is estimated and then
 scaled such that it is on a scale similar to the asset returns. By default,
-the centroid vector is scaled according to the median of the asset mean 
+the centroid vector is scaled according to the median of the asset mean
 returns.
 }
 \examples{
 data(edhec)
-R <- edhec[,1:4]
+R <- edhec[, 1:4]
 ac.ranking(R, c(2, 3, 1, 4))
 }
 \references{
-R. Almgren and N. Chriss, "Portfolios from Sorts" 
-\url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=720041}
+R. Almgren and N. Chriss, "Portfolios from Sorts"
+https://papers.ssrn.com/sol3/papers.cfm?abstract_id=720041
 }
 \seealso{
 \code{\link{centroid.complete.mc}} \code{\link{centroid.sectors}}

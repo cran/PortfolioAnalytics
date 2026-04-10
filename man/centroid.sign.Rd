@@ -7,10 +7,10 @@
 centroid.sign(positive, negative, simulations = 1000)
 }
 \arguments{
-\item{positive}{a vector of the index of assets with positive expected 
+\item{positive}{a vector of the index of assets with positive expected
 return in ascending order}
 
-\item{negative}{a vector of the index of assets with negative expected 
+\item{negative}{a vector of the index of assets with negative expected
 return in ascending order.}
 
 \item{simulations}{number of simulations}
@@ -19,11 +19,11 @@ return in ascending order.}
 the centroid vector
 }
 \description{
-Compute the centroid for expressing a view on assets with positive or 
+Compute the centroid for expressing a view on assets with positive or
 negative expected returns
 }
 \examples{
-# Express a view that 
+# Express a view that
 # R_1 < R_2 < 0 < R_3 < R_4
 centroid.sign(c(1, 2), c(4, 3))
 }

@@ -7,9 +7,9 @@
 centroid.complete.mc(order, simulations = 1000)
 }
 \arguments{
-\item{order}{a vector of indexes of the relative ranking of expected asset 
-returns in ascending order. For example, \code{order = c(2, 3, 1, 4)} 
-expresses a view on the expected returns such that 
+\item{order}{a vector of indexes of the relative ranking of expected asset
+returns in ascending order. For example, \code{order = c(2, 3, 1, 4)}
+expresses a view on the expected returns such that
 R_2 < R_3 < R_1 < R_4}
 
 \item{simulations}{number of simulations}
